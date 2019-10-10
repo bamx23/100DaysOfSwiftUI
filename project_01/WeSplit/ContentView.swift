@@ -13,7 +13,7 @@ struct ContentView: View {
     let tipPercentages = [10, 15, 20, 25, 0]
 
     @State private var checkAmount = ""
-    @State private var numberOfPeople = 2
+    @State private var numberOfPeople = 2.0
     @State private var tipPercentage = 2
 
     let localeBasedFormatter: NumberFormatter = {
@@ -23,24 +23,38 @@ struct ContentView: View {
         return formatter
     }()
 
-    var totalPerPerson: Double {
-        let peopleCount = Double(numberOfPeople + 2)
+    var totalAmount: Double {
         let tipAmountFactor = Double(tipPercentages[tipPercentage]) / 100.0
         let checkAmountValue = localeBasedFormatter.number(from: checkAmount)?.doubleValue ?? 0.0
-        return checkAmountValue * (1.0 + tipAmountFactor) / peopleCount
+        return checkAmountValue * (1.0 + tipAmountFactor)
+    }
+
+    var totalPerPerson: Double {
+        let peopleCount = numberOfPeople + 2.0
+        return totalAmount / peopleCount
+    }
+
+    var currencySymbol: String {
+        Locale.current.currencySymbol ?? "$"
+    }
+
+    func text(withMoneyAmount value: Double) -> Text {
+        Text("\(currencySymbol) \(value, specifier: "%.2f")")
     }
 
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    TextField("Amount", text: $checkAmount)
-                        .keyboardType(.decimalPad)
-                    Picker("Number of people", selection: $numberOfPeople) {
-                        ForEach(2 ..< 100) {
-                            Text("\($0) people")
-                        }
+                Section(header: Text("Check")) {
+                    HStack {
+                        Text(currencySymbol)
+                        TextField("Amount", text: $checkAmount)
+                            .keyboardType(.decimalPad)
                     }
+                }
+                Section(header: Text("Number of people")) {
+                    Text("\(numberOfPeople, specifier: "%.0f") persons")
+                    Slider(value: $numberOfPeople, in: 2...20, step: 1)
                 }
                 Section(header: Text("How much tip do you want to leave?")) {
                     Picker("Tip percentage", selection: $tipPercentage) {
@@ -50,8 +64,11 @@ struct ContentView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
+                Section(header: Text("Total amount for the check")) {
+                    text(withMoneyAmount: totalAmount)
+                }
                 Section(header: Text("Each of you should pay").bold()) {
-                    Text("\(Locale.current.currencySymbol ?? "$") \(totalPerPerson, specifier: "%.2f")")
+                    text(withMoneyAmount: totalPerPerson)
                 }
             }
             .navigationBarTitle("WeSplit")
