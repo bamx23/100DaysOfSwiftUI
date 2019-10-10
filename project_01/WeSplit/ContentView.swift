@@ -16,10 +16,17 @@ struct ContentView: View {
     @State private var numberOfPeople = 2
     @State private var tipPercentage = 2
 
+    let localeBasedFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
         let tipAmountFactor = Double(tipPercentages[tipPercentage]) / 100.0
-        let checkAmountValue = Double(checkAmount) ?? 0.0
+        let checkAmountValue = localeBasedFormatter.number(from: checkAmount)?.doubleValue ?? 0.0
         return checkAmountValue * (1.0 + tipAmountFactor) / peopleCount
     }
 
@@ -44,7 +51,7 @@ struct ContentView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 Section(header: Text("Each of you should pay").bold()) {
-                    Text("$\(totalPerPerson, specifier: "%.2f")")
+                    Text("\(Locale.current.currencySymbol ?? "$") \(totalPerPerson, specifier: "%.2f")")
                 }
             }
             .navigationBarTitle("WeSplit")
