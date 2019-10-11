@@ -90,11 +90,12 @@ struct ContentView: View {
         (sourceGroup + 1) % 2
     }
 
+    let groupSize = 4
     var sourceUnits: [LengthUnit] {
-        (0..<4).map{ LengthUnit(rawValue: $0 + self.sourceGroup * 4)! }
+        (0..<groupSize).map{ LengthUnit(rawValue: $0 + self.sourceGroup * groupSize)! }
     }
     var targetUnits: [LengthUnit] {
-        (0..<4).map{ LengthUnit(rawValue: $0 + self.targetGroup * 4)! }
+        (0..<groupSize).map{ LengthUnit(rawValue: $0 + self.targetGroup * groupSize)! }
     }
 
     func swapUnits() {
@@ -113,6 +114,7 @@ struct ContentView: View {
             Form {
                 Section {
                     TextField("Source value", text: $sourceValue)
+                        .keyboardType(.decimalPad)
                     UnitPicker(title: "Source units", units: sourceUnits, value: $sourceIndex)
                     Button(action: swapUnits) {
                         HStack {
