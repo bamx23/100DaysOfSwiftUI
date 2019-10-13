@@ -14,9 +14,17 @@ struct ContentView: View {
             AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
                 .edgesIgnoringSafeArea(.all)
             Circle().frame(width: 50, height: 50).foregroundColor(Color.white)
-            Text("Your content")
-                .padding()
-                .background(Color.secondary.colorInvert())
+            VStack {
+                Text("Your content")
+                    .padding()
+                    .background(Color.secondary.colorInvert())
+                Button(action: { print("Hello") }) {
+                    HStack(spacing: 10) {
+                        Image(systemName: "pencil")
+                        Text("Edit")
+                    }
+                }
+            }
         }
     }
 }
