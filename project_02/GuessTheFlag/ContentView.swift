@@ -11,7 +11,9 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         ZStack {
-            Color.red.edgesIgnoringSafeArea(.all)
+            AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
+                .edgesIgnoringSafeArea(.all)
+            Circle().frame(width: 50, height: 50).foregroundColor(Color.white)
             Text("Your content")
                 .padding()
                 .background(Color.secondary.colorInvert())
