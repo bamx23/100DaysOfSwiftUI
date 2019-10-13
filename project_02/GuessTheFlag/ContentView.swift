@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showingAlert = false
+
     var body: some View {
         ZStack {
             AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
@@ -18,11 +20,16 @@ struct ContentView: View {
                 Text("Your content")
                     .padding()
                     .background(Color.secondary.colorInvert())
-                Button(action: { print("Hello") }) {
+                Button(action: { self.showingAlert.toggle() }) {
                     HStack(spacing: 10) {
                         Image(systemName: "pencil")
                         Text("Edit")
                     }
+                }
+                .alert(isPresented: $showingAlert) {
+                    Alert(title: Text("Hello SwiftUI!"),
+                          message: Text("This is some detail message"),
+                          dismissButton: .default(Text("OK")))
                 }
             }
         }
