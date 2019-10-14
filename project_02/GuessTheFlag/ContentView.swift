@@ -9,28 +9,31 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showingAlert = false
+    var countries = [
+        "Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"
+    ]
+    var correctAnswer = Int.random(in: 0...2)
 
     var body: some View {
         ZStack {
-            AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
-                .edgesIgnoringSafeArea(.all)
-            Circle().frame(width: 50, height: 50).foregroundColor(Color.white)
-            VStack {
-                Text("Your content")
-                    .padding()
-                    .background(Color.secondary.colorInvert())
-                Button(action: { self.showingAlert.toggle() }) {
-                    HStack(spacing: 10) {
-                        Image(systemName: "pencil")
-                        Text("Edit")
+            Color.blue.edgesIgnoringSafeArea(.all)
+            VStack(spacing: 30) {
+                VStack {
+                    Text("Tap the flag of")
+                        .foregroundColor(.white)
+                    Text(countries[correctAnswer])
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
+                ForEach(0..<3) { number in
+                    Button(action: {
+                        // TODO
+                    }) {
+                        Image(self.countries[number])
+                            .renderingMode(.original)
                     }
                 }
-                .alert(isPresented: $showingAlert) {
-                    Alert(title: Text("Hello SwiftUI!"),
-                          message: Text("This is some detail message"),
-                          dismissButton: .default(Text("OK")))
-                }
+                Spacer()
             }
         }
     }
