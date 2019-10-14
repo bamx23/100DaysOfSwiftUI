@@ -14,6 +14,7 @@ struct ContentView: View {
     ].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
 
+    @State private var score = 0
     @State private var showingScore = false
     @State private var scoreTitle = ""
 
@@ -45,14 +46,21 @@ struct ContentView: View {
             }
         }
         .alert(isPresented: $showingScore) {
-            Alert(title: Text("Score"), message: Text("100"), dismissButton: .default(Text("OK")) {
+            Alert(title: Text(scoreTitle), message: Text("Your score is \(score)"), dismissButton: .default(Text("OK")) {
                 self.askQuestion()
             })
         }
     }
 
     func flagTapped(_ number: Int) {
-        scoreTitle = number == correctAnswer ? "Correct" : "Wrong"
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+            score += 30
+        } else {
+            scoreTitle = "Wrong"
+            score -= 10
+        }
+
         showingScore = true
     }
 
