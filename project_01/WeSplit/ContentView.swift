@@ -8,6 +8,22 @@
 
 import SwiftUI
 
+struct TipModifier: ViewModifier {
+    let amount: Double
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(amount.isZero ? Color.red : Color.clear)
+            .foregroundColor(amount.isZero ? Color.white : Color.primary)
+    }
+}
+
+extension View {
+    func tipStyle(amount: Double) -> some View {
+        self.modifier(TipModifier(amount: amount))
+    }
+}
+
 struct ContentView: View {
 
     let tipPercentages = [10, 15, 20, 25, 0]
@@ -23,8 +39,9 @@ struct ContentView: View {
         return formatter
     }()
 
+    var tipAmountFactor: Double { Double(tipPercentages[tipPercentage]) / 100.0 }
+
     var totalAmount: Double {
-        let tipAmountFactor = Double(tipPercentages[tipPercentage]) / 100.0
         let checkAmountValue = localeBasedFormatter.number(from: checkAmount)?.doubleValue ?? 0.0
         return checkAmountValue * (1.0 + tipAmountFactor)
     }
@@ -38,8 +55,9 @@ struct ContentView: View {
         Locale.current.currencySymbol ?? "$"
     }
 
-    func text(withMoneyAmount value: Double) -> Text {
+    func text(withMoneyAmount value: Double) -> some View {
         Text("\(currencySymbol) \(value, specifier: "%.2f")")
+            .tipStyle(amount: tipAmountFactor)
     }
 
     var body: some View {
