@@ -8,6 +8,19 @@
 
 import SwiftUI
 
+struct FlagView: View {
+    let name: String
+    let strokeColor: Color
+
+    var body: some View {
+        Image(name)
+            .renderingMode(.original)
+            .clipShape(Capsule(style: .continuous))
+            .overlay(Capsule(style: .continuous).stroke(strokeColor, lineWidth: 2))
+            .shadow(color: .black, radius: 2)
+    }
+}
+
 struct ContentView: View {
     @State private var countries = [
         "Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"
@@ -38,12 +51,8 @@ struct ContentView: View {
                     Button(action: {
                         self.flagTapped(number)
                     }) {
-                        Image(self.countries[number])
-                            .renderingMode(.original)
-                            .clipShape(Capsule(style: .continuous))
-                            .overlay(Capsule(style: .continuous)
-                                .stroke(self.strokeColorForFlag(number), lineWidth: 2))
-                            .shadow(color: .black, radius: 2)
+                        FlagView(name: self.countries[number],
+                                 strokeColor: self.strokeColorForFlag(number))
                     }
                 }
                 VStack {
