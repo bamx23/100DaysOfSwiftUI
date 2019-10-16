@@ -73,14 +73,30 @@ struct GridStack<Content: View>: View {
     }
 }
 
+struct LargetTitleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundColor(.blue)
+    }
+}
+
+extension View {
+    func largeTitle() -> some View {
+        self.modifier(LargetTitleModifier())
+    }
+}
+
 struct ContentView: View {
     @State private var useRedText = false
 
     var body: some View {
         VStack(spacing: 20) {
+            Text("Title")
+                .largeTitle()
             CapsuleText(text: "First")
                 .foregroundColor(.white)
-            CapsuleText(text: "Second")
+            CapsuleText(text: "Watermarked")
                 .foregroundColor(.yellow)
                 .watermarked(with: "bamx23")
             GridStack(rows: 3, columns: 3) { r, c in
