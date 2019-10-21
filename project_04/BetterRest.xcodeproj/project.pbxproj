@@ -13,6 +13,8 @@
 		41971DE6235E258000AFA404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41971DE5235E258000AFA404 /* Assets.xcassets */; };
 		41971DE9235E258000AFA404 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41971DE8235E258000AFA404 /* Preview Assets.xcassets */; };
 		41971DEC235E258000AFA404 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41971DEA235E258000AFA404 /* LaunchScreen.storyboard */; };
+		41971DF5235E367700AFA404 /* BetterRest.csv in Resources */ = {isa = PBXBuildFile; fileRef = 41971DF3235E367700AFA404 /* BetterRest.csv */; };
+		41971DF6235E367700AFA404 /* BetterRest.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 41971DF4235E367700AFA404 /* BetterRest.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		41971DE8235E258000AFA404 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41971DEB235E258000AFA404 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		41971DED235E258000AFA404 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41971DF3235E367700AFA404 /* BetterRest.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BetterRest.csv; sourceTree = "<group>"; };
+		41971DF4235E367700AFA404 /* BetterRest.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = BetterRest.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 				41971DDF235E257E00AFA404 /* AppDelegate.swift */,
 				41971DE1235E257E00AFA404 /* SceneDelegate.swift */,
 				41971DE3235E257E00AFA404 /* ContentView.swift */,
+				41971DF3235E367700AFA404 /* BetterRest.csv */,
+				41971DF4235E367700AFA404 /* BetterRest.mlmodel */,
 				41971DE5235E258000AFA404 /* Assets.xcassets */,
 				41971DEA235E258000AFA404 /* LaunchScreen.storyboard */,
 				41971DED235E258000AFA404 /* Info.plist */,
@@ -133,6 +139,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41971DF5235E367700AFA404 /* BetterRest.csv in Resources */,
 				41971DEC235E258000AFA404 /* LaunchScreen.storyboard in Resources */,
 				41971DE9235E258000AFA404 /* Preview Assets.xcassets in Resources */,
 				41971DE6235E258000AFA404 /* Assets.xcassets in Resources */,
@@ -148,6 +155,7 @@
 			files = (
 				41971DE0235E257E00AFA404 /* AppDelegate.swift in Sources */,
 				41971DE2235E257E00AFA404 /* SceneDelegate.swift in Sources */,
+				41971DF6235E367700AFA404 /* BetterRest.mlmodel in Sources */,
 				41971DE4235E257E00AFA404 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
