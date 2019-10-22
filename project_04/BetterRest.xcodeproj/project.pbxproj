@@ -13,7 +13,6 @@
 		41971DE6235E258000AFA404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41971DE5235E258000AFA404 /* Assets.xcassets */; };
 		41971DE9235E258000AFA404 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41971DE8235E258000AFA404 /* Preview Assets.xcassets */; };
 		41971DEC235E258000AFA404 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41971DEA235E258000AFA404 /* LaunchScreen.storyboard */; };
-		41971DF5235E367700AFA404 /* BetterRest.csv in Resources */ = {isa = PBXBuildFile; fileRef = 41971DF3235E367700AFA404 /* BetterRest.csv */; };
 		41971DF6235E367700AFA404 /* BetterRest.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 41971DF4235E367700AFA404 /* BetterRest.mlmodel */; };
 /* End PBXBuildFile section */
 
@@ -139,7 +138,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41971DF5235E367700AFA404 /* BetterRest.csv in Resources */,
 				41971DEC235E258000AFA404 /* LaunchScreen.storyboard in Resources */,
 				41971DE9235E258000AFA404 /* Preview Assets.xcassets in Resources */,
 				41971DE6235E258000AFA404 /* Assets.xcassets in Resources */,

@@ -36,7 +36,7 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? Date()
     }
 
-    func calculateBedtime() {
+    func calculateBedtime() -> String? {
         let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
         let hour = (components.hour ?? 0) * 60 * 60
         let minute = (components.minute ?? 0) * 60
@@ -52,56 +52,70 @@ struct ContentView: View {
             let formatter = DateFormatter()
             formatter.timeStyle = .short
 
-            alertTitle = "Your ideal bedtime is…"
-            alertMessage = formatter.string(from: sleepTime)
+            return formatter.string(from: sleepTime)
         } catch {
             alertTitle = "Error"
             alertMessage = "Sorry, there was a problem calculating your bedtime."
+            wakeUp = Self.defaultWakeTime
+            sleepAmount = 8.0
+            coffeeAmount = 1
+            showingAlert = true
         }
-        showingAlert = true
+        return nil
     }
 
     var body: some View {
         NavigationView {
             Form {
-                VStack {
-                    Text("When do you want to wake up?")
-                        .font(.headline)
+                Section {
+                    VStack {
+                        Text("When do you want to wake up?")
+                            .font(.headline)
 
-                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-                        .datePickerStyle(WheelDatePickerStyle())
-                }
-
-                VStack {
-                    Text("Desired amount of sleep")
-                        .font(.headline)
-
-                    Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
-                        Text("\(sleepAmount, specifier: "%g") hours")
+                        DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .datePickerStyle(WheelDatePickerStyle())
                     }
-                }
 
-                VStack {
-                    Text("Daily coffee intake")
-                        .font(.headline)
+                    VStack {
+                        Text("Desired amount of sleep")
+                            .font(.headline)
 
-                    Stepper(value: $coffeeAmount, in: 1...20) {
-                        if coffeeAmount == 1 {
-                            Text("1 cup")
-                        } else {
-                            Text("\(coffeeAmount) cups")
+                        Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
+                            Text("\(sleepAmount, specifier: "%g") hours")
                         }
                     }
+
+                    VStack {
+                        Text("Daily coffee intake")
+                            .font(.headline)
+
+                        Picker("Coffee amount", selection: $coffeeAmount) {
+                            ForEach(0..<21) { amount in
+                                if amount == 0 {
+                                    Text("no coffee")
+                                } else if amount == 1 {
+                                    Text("1 cup")
+                                } else {
+                                    Text("\(amount) cups")
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Section {
+                    VStack {
+                        Text("Your ideal bedtime is")
+                            .font(.headline)
+                        Text(calculateBedtime() ?? "...")
+                            .font(.largeTitle)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
             .padding()
             .navigationBarTitle("BetterRest")
-            .navigationBarItems(trailing:
-                Button(action: calculateBedtime) {
-                    Text("Calculate")
-                }
-            )
         }.alert(isPresented: $showingAlert) {
             Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
