@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var usedWords = [String]()
     @State private var rootWord = ""
     @State private var newWord = ""
+    @State private var score = 0
 
     @State private var errorTitle = ""
     @State private var errorMessage = ""
@@ -28,7 +29,11 @@ struct ContentView: View {
         guard let randomWord = words.randomElement() else {
             fatalError("Can't get a random word")
         }
+
+        usedWords = []
         rootWord = randomWord
+        newWord = ""
+        score = 0
     }
 
     func addWord() {
@@ -36,19 +41,11 @@ struct ContentView: View {
         guard normalizedWord.count != 0 else {
             return
         }
-        guard isOriginal(word: normalizedWord) else {
-            wordError(title: "Word used already", message: "Be more original")
-            return
-        }
-        guard isPossible(word: normalizedWord) else {
-            wordError(title: "Word not recognized", message: "You can't just make them up, you know!")
-            return
-        }
-        guard isReal(word: normalizedWord) else {
-            wordError(title: "Word not possible", message: "That isn't a real word.")
+        guard runChecks(word: normalizedWord) else {
             return
         }
         usedWords.insert(normalizedWord, at: 0)
+        score += normalizedWord.count
         newWord = ""
     }
 
@@ -58,8 +55,40 @@ struct ContentView: View {
         showingError = true
     }
 
+    func runChecks(word: String) -> Bool {
+        guard isOriginal(word: word) else {
+            wordError(title: "Word used already", message: "Be more original.")
+            return false
+        }
+        guard isLongEnough(word: word) else {
+            wordError(title: "Word too short", message: "Try adding more letters.")
+            return false
+        }
+        guard isNotSameWord(word: word) else {
+            wordError(title: "Word is the same", message: "You can't use the original one.")
+            return false
+        }
+        guard isPossible(word: word) else {
+            wordError(title: "Word not recognized", message: "You can't just make them up, you know!")
+            return false
+        }
+        guard isReal(word: word) else {
+            wordError(title: "Word not possible", message: "That isn't a real word.")
+            return false
+        }
+        return true
+    }
+
     func isOriginal(word: String) -> Bool {
         !usedWords.contains(word)
+    }
+
+    func isLongEnough(word: String) -> Bool {
+        word.count >= 3
+    }
+
+    func isNotSameWord(word: String) -> Bool {
+        word != rootWord
     }
 
     func isPossible(word: String) -> Bool {
@@ -89,6 +118,15 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
+                VStack {
+                    Text("Score")
+                        .font(.headline)
+
+                    //Text("\(score)")
+                    Image(systemName: "\(score).circle")
+                        .font(.largeTitle)
+                }
+
                 TextField("Enter your word", text: $newWord, onCommit: addWord)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
@@ -101,9 +139,16 @@ struct ContentView: View {
             }
             .navigationBarTitle(rootWord)
             .onAppear(perform: startGame)
+            .navigationBarItems(trailing: Button(action: startGame) {
+                HStack {
+                    Image(systemName: "arrow.uturn.left.circle")
+                    Text("Restart")
+                }
+            })
             .alert(isPresented: $showingError) {
                 Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
+            .animation(.easeIn)
         }
     }
 }
