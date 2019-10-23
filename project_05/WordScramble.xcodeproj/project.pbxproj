@@ -13,6 +13,7 @@
 		419959EB2360EDAC00D4E68A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 419959EA2360EDAC00D4E68A /* Assets.xcassets */; };
 		419959EE2360EDAC00D4E68A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 419959ED2360EDAC00D4E68A /* Preview Assets.xcassets */; };
 		419959F12360EDAC00D4E68A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419959EF2360EDAC00D4E68A /* LaunchScreen.storyboard */; };
+		419959F92360EE2700D4E68A /* start.txt in Resources */ = {isa = PBXBuildFile; fileRef = 419959F82360EE2700D4E68A /* start.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		419959ED2360EDAC00D4E68A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		419959F02360EDAC00D4E68A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		419959F22360EDAC00D4E68A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		419959F82360EE2700D4E68A /* start.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = start.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				419959EF2360EDAC00D4E68A /* LaunchScreen.storyboard */,
 				419959F22360EDAC00D4E68A /* Info.plist */,
 				419959EC2360EDAC00D4E68A /* Preview Content */,
+				419959F82360EE2700D4E68A /* start.txt */,
 			);
 			path = WordScramble;
 			sourceTree = "<group>";
@@ -134,6 +137,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				419959F12360EDAC00D4E68A /* LaunchScreen.storyboard in Resources */,
+				419959F92360EE2700D4E68A /* start.txt in Resources */,
 				419959EE2360EDAC00D4E68A /* Preview Assets.xcassets in Resources */,
 				419959EB2360EDAC00D4E68A /* Assets.xcassets in Resources */,
 			);
