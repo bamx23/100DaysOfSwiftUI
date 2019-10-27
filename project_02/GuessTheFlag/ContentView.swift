@@ -10,14 +10,38 @@ import SwiftUI
 
 struct FlagView: View {
     let name: String
-    let strokeColor: Color
+    let correct: Bool
+    let choosen: Bool
+    let playerCorrect: Bool
+    let enabled: Bool
+    let action: () -> Void
 
     var body: some View {
-        Image(name)
-            .renderingMode(.original)
-            .clipShape(Capsule(style: .continuous))
-            .overlay(Capsule(style: .continuous).stroke(strokeColor, lineWidth: 2))
-            .shadow(color: .black, radius: 2)
+        Button(action: action) {
+            Image(name)
+                .renderingMode(.original)
+                .opacity((enabled || correct) ? 1.0 : 0.25)
+                .overlay(
+                    ZStack {
+                        Color.red
+                            .opacity(correct ? 0.0 : 0.5)
+                        Text(name)
+                            .font(Font.title.bold())
+                            .padding()
+                            .scaledToFill()
+                            .foregroundColor(.black)
+                            .background(Color.white)
+                            .opacity(0.75)
+                            .clipShape(Capsule())
+                    }
+                    .opacity((enabled || playerCorrect || (!choosen && !correct)) ? 0.0 : 1.0)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .shadow(color: .black, radius: 2)
+                .rotation3DEffect(Angle(degrees: (choosen && correct) ? 360.0 : 0.0), axis: (x: 0, y: 1, z: 0))
+                .animation(enabled ? nil : Animation.easeOut.delay(0.5))
+        }
+        .disabled(!enabled)
     }
 }
 
@@ -26,12 +50,9 @@ struct ContentView: View {
         "Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"
     ].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
-    @State private var choosenAnswer = 0
+    @State private var choosenAnswer: Int?
 
     @State private var score = 0
-    @State private var showingScore = false
-    @State private var scoreTitle = ""
-    @State private var scoreMessage = ""
 
     var body: some View {
         ZStack {
@@ -48,11 +69,12 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity)
                 ForEach(0..<3) { number in
-                    Button(action: {
-                        self.flagTapped(number)
-                    }) {
-                        FlagView(name: self.countries[number],
-                                 strokeColor: self.strokeColorForFlag(number))
+                    FlagView(name: self.countries[number],
+                             correct: self.correctAnswer == number,
+                             choosen: self.choosenAnswer == number,
+                             playerCorrect: self.choosenAnswer == self.correctAnswer,
+                             enabled: self.choosenAnswer == nil) {
+                                self.flagTapped(number)
                     }
                 }
                 VStack {
@@ -65,45 +87,24 @@ struct ContentView: View {
                 Spacer()
             }
         }
-        .alert(isPresented: $showingScore) {
-            Alert(title: Text(scoreTitle),
-                  message: Text(scoreMessage),
-                  dismissButton: .default(Text("OK")) {
-                    self.askQuestion()
-                })
-        }
-    }
-
-    func strokeColorForFlag(_ number: Int) -> Color {
-        if showingScore {
-            if number == correctAnswer {
-                return .green
-            }
-            if number == choosenAnswer {
-                return .red
-            }
-        }
-        return .black
     }
 
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
-            scoreTitle = "Correct"
             score += 30
-            scoreMessage = "Your score is \(score)"
         } else {
-            scoreTitle = "Wrong"
             score -= 10
-            scoreMessage = "That’s the flag of \(countries[number])\nYour score is \(score)"
         }
-
         choosenAnswer = number
-        showingScore = true
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .seconds(2))) {
+            self.askQuestion()
+        }
     }
 
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        choosenAnswer = nil
     }
 }
 
