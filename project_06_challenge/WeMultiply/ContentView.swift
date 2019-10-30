@@ -89,7 +89,10 @@ struct QuestionView: View {
                 }
             }
         }
-        .transition(.pivot)
+        .transition(.asymmetric(
+            insertion: AnyTransition.move(edge: .trailing).combined(with: .scale),
+            removal: AnyTransition.move(edge: .leading).combined(with: .scale)
+        ))
     }
 }
 
@@ -111,19 +114,72 @@ struct CompletionView: View {
     }
 }
 
+struct DotsView: View {
+    let count: Int
+    let current: Int
+    let correct: [Bool]
+
+    let maxCount = 10
+
+    private var minIndex: Int { max(min(count - maxCount, current - maxCount / 2), 0) }
+    private var maxIndex: Int { min(minIndex + maxCount, count) }
+    private var visibleCount: Int { min(count, maxCount) }
+
+    private func dotView(relativeIndex: Int) -> some View {
+        let index = relativeIndex + minIndex
+        let size = CGFloat(index == current ? 20 : 10)
+        var color: Color!
+        if index < current {
+            if correct[index] {
+                color = .green
+            } else {
+                color = .red
+            }
+        } else if index == current {
+            color = .blue
+        } else {
+            color = .gray
+        }
+        return color
+            .frame(width: size, height: size)
+            .clipShape(Circle())
+    }
+
+    private func moreDots(enabled: Bool) -> some View {
+        HStack(spacing: 3) {
+            ForEach(0..<3) { _ in
+                Color.gray
+                    .frame(width: 5, height: 5)
+                    .clipShape(Circle())
+            }
+        }
+        .opacity(enabled ? 1 : 0)
+    }
+
+    var body: some View {
+        HStack {
+            moreDots(enabled: minIndex != 0)
+            ForEach(0..<visibleCount, content: dotView)
+            moreDots(enabled: maxIndex != count)
+        }
+    }
+}
+
 struct ContentView: View {
 
     @State private var showSettings = true
     @State private var upTo = 10
-    @State private var questionsCount = 5
+    @State private var maxQuestionsCount = 5
 
     @State private var questions: [Question]!
     @State private var questionIndex = 0
     @State private var answer = 0
+    @State private var answersCorrect: [Bool] = []
 
     @State private var score = 0
 
     var question: Question { questions[questionIndex] }
+    var questionsCount: Int { min(maxQuestionsCount, upTo * upTo) }
 
     func start() {
         questions = (0..<questionsCount).map { _ in
@@ -133,7 +189,7 @@ struct ContentView: View {
             let maxOption = minOption + 20
             let options = ((0..<3).map { _ in
                 Int.random(in: minOption...maxOption)
-                } + [left * right]).shuffled()
+            } + [left * right]).shuffled()
             return Question(leftNumber: left, rightNumber: right, options: options)
         }
         questionIndex = 0
@@ -147,6 +203,7 @@ struct ContentView: View {
         let correct = (question.leftNumber * question.rightNumber) == answer
 
         score += correct ? 1: -1
+        answersCorrect.append(correct)
         withAnimation {
             questionIndex += 1
             if questionIndex < questionsCount {
@@ -156,7 +213,7 @@ struct ContentView: View {
     }
 
     var settingsView: SettingsView {
-        SettingsView(upTo: $upTo, questionsCount: $questionsCount, action: start)
+        SettingsView(upTo: $upTo, questionsCount: $maxQuestionsCount, action: start)
     }
 
     var body: some View {
@@ -174,7 +231,7 @@ struct ContentView: View {
                         .font(.caption)
                     Text("\(score)")
                         .font(.largeTitle)
-                    Text("\(questionIndex + 1) / \(questionsCount)")
+                    DotsView(count: questionsCount, current: questionIndex, correct: answersCorrect)
                 }
             } else {
                 CompletionView(score: score, settingsView: settingsView)
