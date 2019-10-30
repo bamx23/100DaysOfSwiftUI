@@ -67,25 +67,94 @@ struct Question {
     let options: [Int]
 }
 
+extension Int {
+    var digits: [Int] {
+        if self == 0 {
+            return [0]
+        }
+        var result = [Int]()
+        var x = self
+        while x != 0 {
+            result.append(x % 10)
+            x /= 10
+        }
+        return result.reversed()
+    }
+}
+
 struct QuestionView: View {
     let question: Question
     let option: Binding<Int>
     let action: () -> Void
+
+    @State private var value = 0
+
+    var expectedAnswer: Int { question.leftNumber * question.rightNumber }
+
+    private func addDigit(digit: Int) {
+        withAnimation {
+            value = value * 10 + digit
+        }
+    }
+
+    private func removeDigit() {
+        withAnimation {
+            value /= 10
+        }
+    }
+
+    private func digitButton(_ digit: Int) -> some View {
+        let enabled = (value.digits.count < expectedAnswer.digits.count) || (value == 0)
+        return Button(action: { self.addDigit(digit: digit) }) {
+            Text("\(digit)")
+                .font(.largeTitle)
+                .padding()
+                .background(enabled ? Color.blue : Color.gray)
+                .foregroundColor(.white)
+                .clipShape(Circle())
+        }
+        .disabled(!enabled)
+    }
+
+    private var valueView: some View {
+        let valueDigits = value.digits
+        return HStack {
+            ForEach(0..<expectedAnswer.digits.count) { index in
+                Text((index < valueDigits.count) && (self.value != 0) ? "\(valueDigits[index])" : "?")
+                    .padding()
+                    .font(Font.largeTitle)
+                    .background(Color.green)
+                    .clipShape(Circle())
+                    .animation(.spring(response: 1, dampingFraction: 0.1, blendDuration: 0.1))
+            }
+        }
+    }
 
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.blue, .yellow, .red]), startPoint: .top, endPoint: .bottom)
             VStack {
                 Text("\(question.leftNumber) x \(question.rightNumber) = ?")
-                Picker(selection: option, label: Text("Questions count")) {
-                    ForEach(self.question.options, id: \.self) { num in
-                        Text("\(num)")
+                valueView
+                VStack {
+                    ForEach(0..<3) { row in
+                        HStack {
+                            ForEach(0..<3) { col in
+                                self.digitButton(row * 3 + col + 1)
+                            }
+                        }
                     }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                Button(action: action) {
-                    Text("Go")
-                        .font(.largeTitle)
+                    HStack {
+                        digitButton(0)
+                        Button(action: self.removeDigit) {
+                            Text("<")
+                                .font(.largeTitle)
+                                .padding()
+                                .background(Color.yellow)
+                                .foregroundColor(.black)
+                                .clipShape(Circle())
+                        }
+                    }
                 }
             }
         }
