@@ -56,12 +56,9 @@ struct QuestionView: View {
     private func digitButton(_ digit: Int) -> some View {
         let enabled = (value.digits.count < expectedAnswer.digits.count) || (value == 0)
         return Button(action: { self.addDigit(digit: digit) }) {
-            Text("\(digit)")
-                .font(.largeTitle)
+            CircleImageView(number: digit, size: 60)
+                .foregroundColor(enabled ? Color.blue : Color.gray)
                 .padding()
-                .background(enabled ? Color.blue : Color.gray)
-                .foregroundColor(.white)
-                .clipShape(Circle())
         }
         .disabled(!enabled)
     }
@@ -70,12 +67,8 @@ struct QuestionView: View {
         let valueDigits = value.digits
         return HStack {
             ForEach(0..<expectedAnswer.digits.count) { index in
-                Text((index < valueDigits.count) && (self.value != 0) ? "\(valueDigits[index])" : "?")
-                    .padding()
-                    .font(Font.largeTitle)
-                    .background(Color.green)
-                    .clipShape(Circle())
-                    .animation(.spring(response: 1, dampingFraction: 0.1, blendDuration: 0.1))
+                CircleImageView(name: (index < valueDigits.count) && (self.value != 0) ? "\(valueDigits[index])" : "questionmark", size: 50)
+                    .foregroundColor(.green)
             }
         }
     }
@@ -85,11 +78,12 @@ struct QuestionView: View {
             LinearGradient(gradient: Gradient(colors: [.blue, .yellow, .red]), startPoint: .top, endPoint: .bottom)
             VStack {
                 Text("\(question.leftNumber) x \(question.rightNumber) = ?")
+                    .font(.system(size: 50))
                 valueView
                 VStack {
                     VStack(spacing: 0) {
                         ForEach(0..<3) { row in
-                            HStack {
+                            HStack(spacing: 0) {
                                 ForEach(0..<3) { col in
                                     self.digitButton(row * 3 + col + 1)
                                 }
@@ -101,19 +95,20 @@ struct QuestionView: View {
                                 Image(systemName: "delete.left.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.yellow)
+                                    .shadow(radius: 10)
                             }
                         }
                     }
                     Button(action: self.complete) {
-                        Image(systemName: "play.circle.fill")
-                            .font(.system(size: 70))
+                        CircleImageView(name: "play", size: 70)
                             .foregroundColor(.green)
-                            .shadow(radius: 5.0)
+                            .padding()
                     }
                 }
             }
         }
-        .frame(width: 400, height: 600)
+        .padding([.horizontal], -50)
+        .frame(maxHeight: 700)
         .clipShape(RoundedRectangle(cornerRadius: 10.0))
         .transition(.asymmetric(
             insertion: AnyTransition.move(edge: .trailing).combined(with: .scale),

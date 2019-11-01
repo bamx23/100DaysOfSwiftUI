@@ -104,6 +104,7 @@ struct ContentView: View {
                                 .font(.largeTitle)
                             DotsView(count: questionsCount, current: questionIndex, correct: answersCorrect)
                         }
+                        Spacer()
                     }
                     .blur(radius: complete ? 10 : 0)
                     .disabled(complete)
@@ -113,8 +114,10 @@ struct ContentView: View {
                                    settingsAction: { self.showSettings = true })
                         .opacity(complete ? 1 : 0)
                 }
+                .edgesIgnoringSafeArea(.all)
             }
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

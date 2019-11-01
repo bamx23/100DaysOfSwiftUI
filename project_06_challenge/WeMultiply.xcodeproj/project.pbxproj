@@ -17,6 +17,7 @@
 		419965442367703F00D4E68A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 419965432367703F00D4E68A /* Assets.xcassets */; };
 		419965472367703F00D4E68A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 419965462367703F00D4E68A /* Preview Assets.xcassets */; };
 		4199654A2367703F00D4E68A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419965482367703F00D4E68A /* LaunchScreen.storyboard */; };
+		41B35B0E236CADB10006F3E6 /* CircleImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B35B0D236CADB10006F3E6 /* CircleImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		419965462367703F00D4E68A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		419965492367703F00D4E68A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4199654B2367703F00D4E68A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41B35B0D236CADB10006F3E6 /* CircleImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +54,7 @@
 				41958245236B23680069CF48 /* QuestionView.swift */,
 				41958247236B239F0069CF48 /* SettingsView.swift */,
 				41958249236B23D60069CF48 /* DotsView.swift */,
+				41B35B0D236CADB10006F3E6 /* CircleImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 				41958248236B239F0069CF48 /* SettingsView.swift in Sources */,
 				419965402367703E00D4E68A /* SceneDelegate.swift in Sources */,
 				419965422367703E00D4E68A /* ContentView.swift in Sources */,
+				41B35B0E236CADB10006F3E6 /* CircleImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

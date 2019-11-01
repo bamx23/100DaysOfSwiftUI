@@ -10,6 +10,7 @@ import SwiftUI
 
 private struct NumberView: View {
     let number: Int
+    let name: String
     let selected: Int
     let action: (Int) -> Void
 
@@ -23,39 +24,9 @@ private struct NumberView: View {
             color = .gray
         }
         return Button(action: { self.action(self.number) }) {
-            Image(systemName: "\(number).circle.fill")
-                .font(.system(size: 60))
-                .background(Color.white
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle()))
+            CircleImageView(name: name, size: 60)
                 .foregroundColor(color)
                 .padding()
-        }
-    }
-}
-
-private struct AllView: View {
-    let selected: Int
-    let action: (Int) -> Void
-
-    private let number = Int.max
-
-    var body: some View {
-        var color: Color!
-        if (number < selected) {
-            color = .green
-        } else if (number == selected) {
-            color = .blue
-        } else {
-            color = .gray
-        }
-        return Button(action: { self.action(self.number) }) {
-            Text("ALL")
-                .font(.system(size: 40))
-                .padding(7)
-                .background(color)
-                .foregroundColor(.white)
-                .clipShape(Circle())
         }
     }
 }
@@ -74,7 +45,7 @@ struct SettingsView: View {
             ForEach(0..<3) { row in
                 HStack {
                     ForEach(0..<4) { col in
-                        NumberView(number: row * 4 + col + 1, selected: self.selectedUpTo) { num in
+                        NumberView(number: row * 4 + col + 1, name: "\(row * 4 + col + 1)", selected: self.selectedUpTo) { num in
                             withAnimation {
                                 self.selectedUpTo = num
                             }
@@ -87,14 +58,14 @@ struct SettingsView: View {
 
     var sountNumbers: some View {
         HStack(spacing: 0) {
-            ForEach(0..<Self.questionsCountOptions.count) { idx in
-                NumberView(number: Self.questionsCountOptions[idx], selected: self.selectedCount) { num in
+            ForEach(Self.questionsCountOptions, id: \.self) { num in
+                NumberView(number: num, name: "\(num)", selected: self.selectedCount) { num in
                     withAnimation {
                         self.selectedCount = num
                     }
                 }
             }
-            AllView(selected: self.selectedCount) { num in
+            NumberView(number: Int.max, name: "a", selected: self.selectedCount) { num in
                 withAnimation {
                     self.selectedCount = num
                 }
