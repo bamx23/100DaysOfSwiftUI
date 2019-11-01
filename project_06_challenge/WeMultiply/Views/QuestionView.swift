@@ -11,7 +11,6 @@ import SwiftUI
 struct Question {
     let leftNumber: Int
     let rightNumber: Int
-    let options: [Int]
 }
 
 extension Int {

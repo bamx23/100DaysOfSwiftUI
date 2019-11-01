@@ -44,16 +44,12 @@ struct ContentView: View {
     var questionsCount: Int { min(maxQuestionsCount, upTo * upTo) }
 
     func start() {
-        questions = (0..<questionsCount).map { _ in
-            let left = Int.random(in: 1...upTo)
-            let right = Int.random(in: 1...upTo)
-            let minOption = max(left * right - 10, 1)
-            let maxOption = minOption + 20
-            let options = ((0..<3).map { _ in
-                Int.random(in: minOption...maxOption)
-            } + [left * right]).shuffled()
-            return Question(leftNumber: left, rightNumber: right, options: options)
-        }
+
+        questions = (1...upTo).flatMap { left in
+            (1...upTo).map { right in
+                Question(leftNumber: left, rightNumber: right)
+            }
+        }.shuffled()[0...(questionsCount - 1)].shuffled()
         questionIndex = 0
         withAnimation {
             self.showSettings = false
