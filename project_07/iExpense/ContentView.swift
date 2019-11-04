@@ -8,25 +8,40 @@
 
 import SwiftUI
 
+enum ExpenseType: String, Codable {
+    case business = "Business"
+    case personal = "Personal"
+}
+
+extension ExpenseType: Identifiable {
+    var id: String { rawValue }
+
+    static var all: [ExpenseType] {
+        return [.business, .personal]
+    }
+}
+
 struct ExpenseItem: Identifiable, Codable {
     let id: UUID
     let name: String
-    let type: String
+    let type: ExpenseType
     let amount: Int
 }
 
 class Expenses: ObservableObject {
+    static let key = "Items"
+
     @Published var items: [ExpenseItem] {
         didSet {
             let encoder = JSONEncoder()
             if let encoded = try? encoder.encode(items) {
-                UserDefaults.standard.set(encoded, forKey: "Items")
+                UserDefaults.standard.set(encoded, forKey: Self.key)
             }
         }
     }
 
     init() {
-        if let items = UserDefaults.standard.data(forKey: "Items") {
+        if let items = UserDefaults.standard.data(forKey: Self.key) {
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ExpenseItem].self, from: items) {
                 self.items = decoded
@@ -51,8 +66,6 @@ struct AddView: View {
     @State private var alertTitle = ""
     @State private var alertMessage = ""
 
-    static let types = ["Business", "Personal"]
-
     func save() {
         guard let actualAmount = Int(amount) else {
             showAlert = true
@@ -60,7 +73,8 @@ struct AddView: View {
             alertMessage = "'\(amount)' is not a valid integer number"
             return
         }
-        let item = ExpenseItem(id: .init(), name: name, type: type, amount: actualAmount)
+        let expenseType = ExpenseType(rawValue: type)!
+        let item = ExpenseItem(id: .init(), name: name, type: expenseType, amount: actualAmount)
         expenses.items.append(item)
         presentationMode.wrappedValue.dismiss()
     }
@@ -70,8 +84,8 @@ struct AddView: View {
             Form {
                 TextField("Name", text: $name)
                 Picker("Type", selection: $type) {
-                    ForEach(Self.types, id: \.self) { type in
-                        Text(type)
+                    ForEach(ExpenseType.all) { type in
+                        Text(type.rawValue)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -91,6 +105,22 @@ struct AddView: View {
 
 struct ExpenseView: View {
     let expense: ExpenseItem
+
+    private var typeView: some View {
+        var backgroundColor: Color!
+        switch expense.type {
+        case .personal:
+            backgroundColor = .green
+        case .business:
+            backgroundColor = .yellow
+        }
+        return Text(expense.type.rawValue)
+            .padding(2)
+            .font(.subheadline)
+            .background(backgroundColor)
+            .foregroundColor(.black)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+    }
 
     private var amountView: some View {
         var backgroundColor: Color!
@@ -118,7 +148,7 @@ struct ExpenseView: View {
             VStack {
                 Text(expense.name)
                     .font(.headline)
-                Text(expense.type)
+                typeView
             }
             Spacer()
             amountView
