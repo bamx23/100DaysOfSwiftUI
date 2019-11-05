@@ -8,38 +8,38 @@
 
 import SwiftUI
 
-struct User: Codable {
-    var name: String
-    var address: Address
+struct Astronaut: Codable, Identifiable {
+    let id: String
+    let name: String
+    let description: String
 }
 
-struct Address: Codable {
-    var street: String
-    var city: String
+extension Bundle {
+    func decode(_ file: String) -> [Astronaut] {
+        guard let url = self.url(forResource: file, withExtension: "json") else {
+            fatalError("File not found: \(file).json")
+        }
+        guard let data = try? Data(contentsOf: url) else {
+            fatalError("Failed to load data of \(file).json")
+        }
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode([Astronaut].self, from: data) else {
+            fatalError("Failed to decode astronaouts from \(file).json")
+        }
+        return result
+    }
 }
 
 struct ContentView: View {
+    let astronauts = Bundle.main.decode("astronauts")
+
     var body: some View {
         NavigationView {
-            VStack {
-                Button("Decode") {
-                    let input = """
-                    {
-                        "name": "Taylor Swift",
-                        "address": {
-                            "street": "555, Taylor Swift Avenue",
-                            "city": "Nashville"
-                        }
-                    }
-                    """
-                    let data = Data(input.utf8)
-                    let decoder = JSONDecoder()
-                    if let user = try? decoder.decode(User.self, from: data) {
-                        print(user.address.street)
-                    }
-                }
+            List(astronauts) { astronaut in
+                Text(astronaut.name)
+                    .font(.title)
             }
-            .navigationBarTitle("SwiftUI")
+            .navigationBarTitle("Moonshot")
         }
     }
 }

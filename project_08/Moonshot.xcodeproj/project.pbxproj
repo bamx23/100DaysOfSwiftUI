@@ -13,6 +13,8 @@
 		41BFCEAD237156B400697C61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41BFCEAC237156B400697C61 /* Assets.xcassets */; };
 		41BFCEB0237156B400697C61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41BFCEAF237156B400697C61 /* Preview Assets.xcassets */; };
 		41BFCEB3237156B400697C61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41BFCEB1237156B400697C61 /* LaunchScreen.storyboard */; };
+		41BFCEBC2371627000697C61 /* missions.json in Resources */ = {isa = PBXBuildFile; fileRef = 41BFCEBA2371627000697C61 /* missions.json */; };
+		41BFCEBD2371627000697C61 /* astronauts.json in Resources */ = {isa = PBXBuildFile; fileRef = 41BFCEBB2371627000697C61 /* astronauts.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		41BFCEAF237156B400697C61 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41BFCEB2237156B400697C61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		41BFCEB4237156B400697C61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41BFCEBA2371627000697C61 /* missions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = missions.json; sourceTree = "<group>"; };
+		41BFCEBB2371627000697C61 /* astronauts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = astronauts.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,8 @@
 		41BFCEA5237156B200697C61 /* Moonshot */ = {
 			isa = PBXGroup;
 			children = (
+				41BFCEBB2371627000697C61 /* astronauts.json */,
+				41BFCEBA2371627000697C61 /* missions.json */,
 				41BFCEA6237156B200697C61 /* AppDelegate.swift */,
 				41BFCEA8237156B200697C61 /* SceneDelegate.swift */,
 				41BFCEAA237156B200697C61 /* ContentView.swift */,
@@ -135,6 +141,8 @@
 			files = (
 				41BFCEB3237156B400697C61 /* LaunchScreen.storyboard in Resources */,
 				41BFCEB0237156B400697C61 /* Preview Assets.xcassets in Resources */,
+				41BFCEBC2371627000697C61 /* missions.json in Resources */,
+				41BFCEBD2371627000697C61 /* astronauts.json in Resources */,
 				41BFCEAD237156B400697C61 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
