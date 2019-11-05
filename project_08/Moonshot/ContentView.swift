@@ -56,27 +56,187 @@ extension Bundle {
     }
 }
 
+struct MissionTitleView: View {
+    enum Style {
+        case launchDate
+        case crewNames
+    }
+
+    @EnvironmentObject var data: MoonshotData
+
+    let mission: Mission
+    let style: Style
+
+    private var crewNames: [String] {
+        mission.crew.map { crewMember in
+            guard let astronaut = data.astronauts.first(where: { $0.id == crewMember.name }) else {
+                fatalError("Astronaut not found")
+            }
+            return astronaut.name
+        }
+    }
+    private var subtitles: [String] {
+        switch style {
+        case .crewNames:
+            return crewNames
+        case .launchDate:
+            return [mission.formattedLaunchDate]
+        }
+    }
+
+    var body: some View {
+        HStack {
+            Image(mission.image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 44, height: 44)
+
+            VStack(alignment: .leading) {
+                Text(mission.displayName)
+                    .font(.headline)
+                VStack(alignment: .leading) {
+                    ForEach(subtitles, id: \.self) { name in
+                        Text(name)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.bottom)
+            }
+            Spacer()
+        }
+    }
+}
+
+struct AstronautView: View {
+    @EnvironmentObject var data: MoonshotData
+
+    let astronaut: Astronaut
+    var missions: [Mission] {
+        data.missions.filter { mission in
+            mission.crew.contains { crewMember in
+                crewMember.name == astronaut.id
+            }
+        }
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                VStack {
+                    Image(self.astronaut.id)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geometry.size.width)
+
+                    Text(self.astronaut.description)
+                        .padding()
+                        .layoutPriority(1)
+
+                    VStack {
+                        Text("Missions:")
+                        ForEach(self.missions) { mission in
+                            MissionTitleView(mission: mission, style: .launchDate)
+                        }
+                    }
+                    .padding()
+                }
+            }
+        }
+        .navigationBarTitle(Text(astronaut.name), displayMode: .inline)
+    }
+}
+
+struct MissionView: View {
+    struct CrewMember: Identifiable {
+        var id: String { role }
+        let role: String
+        let astronaut: Astronaut
+    }
+
+    @EnvironmentObject var data: MoonshotData
+
+    let mission: Mission
+    var astronauts: [CrewMember] {
+        mission.crew.map { member in
+            if let match = self.data.astronauts.first(where: { $0.id == member.name }) {
+                return CrewMember(role: member.role, astronaut: match)
+            } else {
+                fatalError("Missing \(member)")
+            }
+        }
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                VStack {
+                    Image(self.mission.image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: geometry.size.width * 0.7)
+                        .padding(.top)
+
+                    HStack {
+                        Text(self.mission.formattedLaunchDate)
+                            .font(.headline)
+                        Spacer()
+                    }
+                    .padding()
+
+                    Text(self.mission.description)
+                        .padding()
+
+                    ForEach(self.astronauts) { crewMember in
+                        NavigationLink(destination: AstronautView(astronaut: crewMember.astronaut)) {
+                            HStack {
+                                Image(crewMember.astronaut.id)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 80, height: 65)
+                                    .clipShape(Capsule())
+                                    .overlay(Capsule().stroke(Color.primary, lineWidth: 1))
+                                VStack(alignment: .leading) {
+                                    Text(crewMember.astronaut.name)
+                                        .font(.headline)
+                                    Text(crewMember.role)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                            }
+                            .padding(.horizontal)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+
+                    Spacer(minLength: 25)
+                }
+            }
+        }
+        .navigationBarTitle(Text(mission.displayName), displayMode: .inline)
+    }
+}
+
 struct ContentView: View {
-    let astronauts: [Astronaut] = Bundle.main.decode("astronauts")
-    let missions: [Mission] = Bundle.main.decode("missions")
+    @EnvironmentObject var data: MoonshotData
+
+    @State private var showCrewNames = false
+
+    var astronauts: [Astronaut] { data.astronauts }
+    var missions: [Mission] { data.missions }
+
+    var titleStyle: MissionTitleView.Style { showCrewNames ? .crewNames : .launchDate }
 
     var body: some View {
         NavigationView {
             List(missions) { mission in
-                NavigationLink(destination: Text("Detail view")) {
-                    Image(mission.image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 44, height: 44)
-
-                    VStack(alignment: .leading) {
-                        Text(mission.displayName)
-                            .font(.headline)
-                        Text(mission.formattedLaunchDate)
-                    }
+                NavigationLink(destination: MissionView(mission: mission)) {
+                    MissionTitleView(mission: mission, style: self.titleStyle)
                 }
             }
             .navigationBarTitle("Moonshot")
+            .navigationBarItems(trailing: Button(action: { withAnimation { self.showCrewNames.toggle() } }) {
+                Text(showCrewNames ? "Crew" : "Launch date")
+            })
         }
     }
 }
