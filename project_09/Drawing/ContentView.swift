@@ -170,7 +170,12 @@ struct Spirograph: Shape {
     let innerRadius: Int
     let outerRadius: Int
     let distance: Int
-    let amount: CGFloat
+    var amount: CGFloat
+
+    var animatableData: CGFloat {
+        get { amount }
+        set { self.amount = newValue }
+    }
 
     static private func gcd(_ a: Int, _ b: Int) -> Int {
         var a = a
@@ -227,6 +232,12 @@ struct ContentView: View {
             Spirograph(innerRadius: Int(innerRadius), outerRadius: Int(outerRadius), distance: Int(distance), amount: amount)
                 .stroke(Color(hue: hue, saturation: 1, brightness: 1), lineWidth: 1)
                 .frame(width: 300, height: 300)
+                .onTapGesture {
+                    self.amount = 0
+                    withAnimation(Animation.easeInOut.repeatCount(3).speed(0.1)) {
+                        self.amount = 1
+                    }
+                }
 
             Spacer()
 
