@@ -218,49 +218,72 @@ struct Spirograph: Shape {
     }
 }
 
+struct Arrow: InsettableShape {
+    var headHeightFactor: CGFloat = 0.3
+    var tailWidthFactor: CGFloat = 0.4
+
+    var inset: CGFloat = 0
+
+    func inset(by amount: CGFloat) -> Arrow {
+        var shape = self
+        shape.inset = amount
+        return shape
+    }
+
+    func path(in originalRect: CGRect) -> Path {
+        var path = Path()
+        let rect = CGRect(x: originalRect.minX + inset, y: originalRect.minY + inset,
+                          width: originalRect.width - inset * 2, height: originalRect.height - inset * 2)
+
+        path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+        let points = [
+            (0, headHeightFactor),
+            (0.5 - tailWidthFactor / 2, headHeightFactor),
+            (0.5 - tailWidthFactor / 2, 1),
+            (0.5 + tailWidthFactor / 2, 1),
+            (0.5 + tailWidthFactor / 2, headHeightFactor),
+            (1.0, headHeightFactor),
+            (0.5, 0),
+            (0, headHeightFactor), // Additional point
+        ]
+        for point in points {
+            path.addLine(to: CGPoint(x: rect.minX + point.0 * rect.width,
+                                     y: rect.minY + point.1 * rect.height))
+        }
+        return path
+    }
+}
+
 struct ContentView: View {
-    @State private var innerRadius = 125.0
-    @State private var outerRadius = 75.0
-    @State private var distance = 25.0
-    @State private var amount: CGFloat = 1.0
-    @State private var hue = 0.6
+    static let strokeSizes: [CGFloat] = [1,3,5,10,20]
+
+    @State private var headHeightFactor: CGFloat = 0.3
+    @State private var tailWidthFactor: CGFloat = 0.4
+    @State private var strokeSize: CGFloat = 10.0
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-
-            Spirograph(innerRadius: Int(innerRadius), outerRadius: Int(outerRadius), distance: Int(distance), amount: amount)
-                .stroke(Color(hue: hue, saturation: 1, brightness: 1), lineWidth: 1)
-                .frame(width: 300, height: 300)
-                .onTapGesture {
-                    self.amount = 0
-                    withAnimation(Animation.easeInOut.repeatCount(3).speed(0.1)) {
-                        self.amount = 1
-                    }
+        VStack {
+            Arrow(headHeightFactor: headHeightFactor, tailWidthFactor: tailWidthFactor)
+                .stroke(lineWidth: strokeSize)
+                .frame(width: 100, height: 300)
+                .foregroundColor(.yellow)
+                .animation(.interpolatingSpring(stiffness: 5, damping: 1))
+                .padding()
+            Form {
+                Section(header: Text("Head Height")) {
+                    Slider(value: $headHeightFactor)
                 }
-
-            Spacer()
-
-            Group {
-                Text("Inner radius: \(Int(innerRadius))")
-                Slider(value: $innerRadius, in: 10...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Outer radius: \(Int(outerRadius))")
-                Slider(value: $outerRadius, in: 10...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Distance: \(Int(distance))")
-                Slider(value: $distance, in: 1...150, step: 1)
-                    .padding([.horizontal, .bottom])
-
-                Text("Amount: \(amount, specifier: "%.2f")")
-                Slider(value: $amount)
-                    .padding([.horizontal, .bottom])
-
-                Text("Color")
-                Slider(value: $hue)
-                    .padding(.horizontal)
+                Section(header: Text("Tail Width")) {
+                    Slider(value: $tailWidthFactor)
+                }
+                Section(header: Text("Stroke Size")) {
+                    Picker("Stroke Size", selection: $strokeSize) {
+                        ForEach(Self.strokeSizes, id: \.self) { value in
+                            Text("\(Int(value))")
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                }
             }
         }
     }
