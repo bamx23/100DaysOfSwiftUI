@@ -139,37 +139,46 @@ struct AppMetricaLogo: View {
     }
 }
 
-struct ContentView: View {
-    @State private var amount: CGFloat = 0.0
-    
-    var body: some View {
-        VStack {
-            ZStack {
-                Circle()
-                    .fill(Color.red)
-                    .frame(width: 200 * amount)
-                    .offset(x: -50, y: -80)
-                    .blendMode(.screen)
+struct Trapezoid: Shape {
+    var insetAmount: CGFloat
+    var scale: CGFloat
 
-                Circle()
-                    .fill(Color.green)
-                    .frame(width: 200 * amount)
-                    .offset(x: 50, y: -80)
-                    .blendMode(.screen)
-
-                Circle()
-                    .fill(Color.blue)
-                    .frame(width: 200 * amount)
-                    .blendMode(.screen)
-            }
-            .frame(width: 300, height: 300)
-
-            Slider(value: $amount)
-                .padding()
+    var animatableData: AnimatablePair<Double, Double> {
+        get { .init(Double(insetAmount), Double(scale)) }
+        set {
+            self.insetAmount = CGFloat(newValue.first)
+            self.scale = CGFloat(newValue.second)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
-        .edgesIgnoringSafeArea(.all)
+    }
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        path.move(to: CGPoint(x: 0, y: rect.maxY))
+        path.addLine(to: CGPoint(x: insetAmount, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - insetAmount, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+
+        path = path.applying(CGAffineTransform(scaleX: scale, y: scale))
+
+        return path
+    }
+}
+
+struct ContentView: View {
+    @State private var insetAmount: CGFloat = 50
+    @State private var scale: CGFloat = 1
+
+    var body: some View {
+        Trapezoid(insetAmount: insetAmount, scale: scale)
+            .frame(width: 200, height: 100)
+            .onTapGesture {
+                withAnimation {
+                    self.insetAmount = CGFloat.random(in: 10...90)
+                    self.scale = CGFloat.random(in: 0.5...2)
+                }
+            }
     }
 }
 
