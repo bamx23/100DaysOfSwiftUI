@@ -97,6 +97,8 @@ struct ColorCyclingCircle: View {
 }
 
 struct AppMetricaLogo: View {
+    var value: CGFloat = 1.0
+
     var body: some View {
         let red = Color(red: 254.0 / 255.0, green: 0.0 / 255.0, blue: 2.0 / 255.0)
         let yellow = Color(red: 255.0 / 255.0, green: 203.0 / 255.0, blue: 0.0 / 255.0)
@@ -104,14 +106,19 @@ struct AppMetricaLogo: View {
         let purple = Color(red: 71.0 / 255.0, green: 66.0 / 255.0, blue: 184.0 / 255.0)
 
         let triangle = Triangle()
-            .frame(width: 350, height: 300)
-            .offset(.init(width: 0, height: 50))
+            .frame(width: 350 * value, height: 300)
+            .offset(.init(width: 0, height: 100 - value * 100 + 50))
         let topRectangle = Rectangle()
-            .frame(width: 300, height: 300)
+            .frame(width: 500, height: 300)
+
             .offset(.init(width: 0, height: -150))
+        .rotationEffect(.degrees(90 - 90 * Double(value)))
+
         let bottomRectangle = Rectangle()
-            .frame(width: 300, height: 300)
+            .frame(width: 500, height: 300)
+
             .offset(.init(width: 0, height: 150))
+        .rotationEffect(.degrees(90 - 90 * Double(value)))
 
         return ZStack {
             topRectangle
@@ -138,11 +145,14 @@ struct ContentView: View {
     @State private var animationAmount = 0.0
 
     var body: some View {
-        AppMetricaLogo()
-            .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1, z: 0))
+        AppMetricaLogo(value: CGFloat(animationAmount))
+            .frame(width: 400, height: 400)
             .onTapGesture {
                 withAnimation(.interpolatingSpring(stiffness: 5, damping: 1)) {
-                    self.animationAmount += 360
+                    self.animationAmount += 1.0
+                    if self.animationAmount >= 2.0 {
+                        self.animationAmount = 0.0
+                    }
                 }
             }
     }
