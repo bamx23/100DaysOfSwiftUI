@@ -254,6 +254,33 @@ struct Arrow: InsettableShape {
     }
 }
 
+struct ColorCyclingRectangle: View {
+    var amount = 0.0
+    var steps = 100
+
+    func color(for value: Int, brightness: Double) -> Color {
+        var targetHue = Double(value) / Double(self.steps) + self.amount
+        if targetHue > 1 {
+            targetHue -= 1
+        }
+        return Color(hue: targetHue, saturation: 1, brightness: brightness)
+    }
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<steps) { value in
+                Rectangle()
+                    .inset(by: CGFloat(value))
+                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [
+                        self.color(for: value, brightness: 1),
+                        self.color(for: value, brightness: 0.5)
+                    ]), startPoint: .top, endPoint: .bottom), lineWidth: 2)
+            }
+        }
+        .drawingGroup()
+    }
+}
+
 struct ContentView: View {
     static let strokeSizes: [CGFloat] = [1,3,5,10,20]
 
@@ -261,31 +288,63 @@ struct ContentView: View {
     @State private var tailWidthFactor: CGFloat = 0.4
     @State private var strokeSize: CGFloat = 10.0
 
+    @State private var color = 0.0
+
+    @State private var animationAmount = 0.0
+
     var body: some View {
-        VStack {
-            Arrow(headHeightFactor: headHeightFactor, tailWidthFactor: tailWidthFactor)
-                .stroke(lineWidth: strokeSize)
-                .frame(width: 100, height: 300)
-                .foregroundColor(.yellow)
-                .animation(.interpolatingSpring(stiffness: 5, damping: 1))
-                .padding()
-            Form {
-                Section(header: Text("Head Height")) {
-                    Slider(value: $headHeightFactor)
-                }
-                Section(header: Text("Tail Width")) {
-                    Slider(value: $tailWidthFactor)
-                }
-                Section(header: Text("Stroke Size")) {
-                    Picker("Stroke Size", selection: $strokeSize) {
-                        ForEach(Self.strokeSizes, id: \.self) { value in
-                            Text("\(Int(value))")
-                        }
+        TabView {
+            VStack {
+                Arrow(headHeightFactor: headHeightFactor, tailWidthFactor: tailWidthFactor)
+                    .stroke(lineWidth: strokeSize)
+                    .frame(width: 100, height: 300)
+                    .foregroundColor(.yellow)
+                    .animation(.interpolatingSpring(stiffness: 5, damping: 1))
+                    .padding()
+                Form {
+                    Section(header: Text("Head Height")) {
+                        Slider(value: $headHeightFactor)
                     }
-                    .pickerStyle(SegmentedPickerStyle())
+                    Section(header: Text("Tail Width")) {
+                        Slider(value: $tailWidthFactor)
+                    }
+                    Section(header: Text("Stroke Size")) {
+                        Picker("Stroke Size", selection: $strokeSize) {
+                            ForEach(Self.strokeSizes, id: \.self) { value in
+                                Text("\(Int(value))")
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                    }
                 }
             }
+            .tabItem({ Text("Arrow") })
+
+            VStack {
+                ColorCyclingRectangle(amount: color)
+                    .frame(width: 300, height: 300)
+                    .padding()
+                Form {
+                    Section(header: Text("Color Hue")) {
+                        Slider(value: $color)
+                    }
+                }
+            }
+            .tabItem({ Text("ColorCyclingRectangle") })
+
+            AppMetricaLogo(value: CGFloat(animationAmount))
+                .frame(width: 400, height: 400)
+                .onTapGesture {
+                    withAnimation(.interpolatingSpring(stiffness: 5, damping: 1)) {
+                        self.animationAmount += 1.0
+                        if self.animationAmount >= 2.0 {
+                            self.animationAmount = 0.0
+                        }
+                    }
+            }
+            .tabItem({ Text("AppMetrica") })
         }
+
     }
 }
 
