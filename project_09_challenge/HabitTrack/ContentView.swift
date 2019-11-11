@@ -12,7 +12,7 @@ struct Activity: Identifiable, Codable {
     let id: UUID
     let name: String
     let description: String
-    var time: TimeInterval
+    var completionsCount: Int
 }
 
 class ActivitiesData: ObservableObject {
@@ -37,10 +37,68 @@ class ActivitiesData: ObservableObject {
     }
 }
 
+extension View {
+    func card(_ title: String) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.subheadline)
+                .foregroundColor(.white)
+            self
+                .frame(maxWidth: .infinity)
+        }
+        .padding()
+        .background(Color.blue)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct DetailsView: View {
+    let activity: Activity
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 20) {
+                VStack(alignment: .leading) {
+                    Text(self.activity.description)
+                        .font(.body)
+                        .foregroundColor(.white)
+                }
+                .card("Description")
+
+                VStack {
+                    HStack(spacing: 20) {
+                        Button(action: {}) {
+                            Image(systemName: "minus.rectangle")
+                                .font(.title)
+                                .foregroundColor(.yellow)
+                        }
+                        Text("\(self.activity.completionsCount)")
+                            .font(.largeTitle)
+                            .padding()
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                        Button(action: {}) {
+                            Image(systemName: "checkmark.rectangle")
+                                .font(.largeTitle)
+                                .foregroundColor(.green)
+                        }
+                    }
+                }
+                .card("Completions count")
+
+                Spacer()
+            }
+            .frame(width: geometry.size.width * 0.9)
+        }
+        .navigationBarTitle(Text(activity.name), displayMode: .inline)
+    }
+}
+
 struct AddView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    let completion: (Activity) -> Void
+    @ObservedObject var data: ActivitiesData
 
     @State private var name = ""
     @State private var description = ""
@@ -52,8 +110,11 @@ struct AddView: View {
                 TextField("Description", text: self.$description)
             }
             Button("Add") {
-                let activity = Activity(id: UUID(), name: self.name, description: self.description, time: 0)
-                self.completion(activity)
+                let activity = Activity(id: UUID(),
+                                        name: self.name,
+                                        description: self.description,
+                                        completionsCount: 0)
+                self.data.activities.append(activity)
                 self.presentationMode.wrappedValue.dismiss()
             }
         }
@@ -69,11 +130,13 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(data.activities) { activity in
-                    VStack {
-                        Text(activity.name)
-                            .font(.headline)
-                        Text(activity.description)
-                            .font(.subheadline)
+                    NavigationLink(destination: DetailsView(activity: activity)) {
+                        VStack {
+                            Text(activity.name)
+                                .font(.headline)
+                            Text(activity.description)
+                                .font(.subheadline)
+                        }
                     }
                 }
                 .onDelete(perform: { self.data.activities.remove(atOffsets: $0) })
@@ -82,11 +145,7 @@ struct ContentView: View {
             .navigationBarItems(leading: EditButton(),
                                 trailing: Button(action: { self.addShown = true }) { Image(systemName: "plus") })
         }
-        .sheet(isPresented: $addShown) {
-            AddView { activity in
-                self.data.activities.append(activity)
-            }
-        }
+        .sheet(isPresented: $addShown) { AddView(data: self.data) }
     }
 }
 
