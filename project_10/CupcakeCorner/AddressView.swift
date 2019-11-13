@@ -9,23 +9,39 @@
 import SwiftUI
 
 struct AddressView: View {
+    @EnvironmentObject var addressBook: AddressBook
     
     @ObservedObject var order: Order
 
     var body: some View {
         Form {
-            Section {
-                TextField("Name", text: $order.name)
-                TextField("Street Address", text: $order.streetAddress)
-                TextField("City", text: $order.city)
-                TextField("Zip", text: $order.zip)
+            Section(header: Text("Address book")) {
+                List {
+                    ForEach(addressBook.list) { address in
+                        Button(address.id) {
+                            self.order.address = address.clone()
+                        }
+                    }
+                    .onDelete(perform: { self.addressBook.list.remove(atOffsets: $0) })
+                }
+            }
+            Section(header: Text("New address")) {
+                TextField("Name", text: $order.address.name)
+                TextField("Street Address", text: $order.address.streetAddress)
+                TextField("City", text: $order.address.city)
+                TextField("Zip", text: $order.address.zip)
+
+                Button("Add to address book") {
+                    self.addressBook.list.append(self.order.address.clone())
+                }
+                .disabled(order.address.isValid == false)
             }
 
             Section {
                 NavigationLink(destination: CheckoutView(order: order)) {
                     Text("Check out")
                 }
-                .disabled(order.hasValidAddress == false)
+                .disabled(order.address.isValid == false)
             }
         }
         .navigationBarTitle("Delivery details", displayMode: .inline)

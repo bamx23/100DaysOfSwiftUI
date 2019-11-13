@@ -8,8 +8,15 @@
 
 import Foundation
 
-class Order: ObservableObject {
+final class Order: ObservableObject, Codable {
     static let types = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
+    private enum Keys: String, CodingKey {
+        case type = "type"
+        case quantity = "quantity"
+        case extraFrosting = "extra_frosting"
+        case addSprinkles = "add_sprinkles"
+        case address = "address"
+    }
 
     @Published var type = 0
     @Published var quantity = 3
@@ -26,14 +33,8 @@ class Order: ObservableObject {
     @Published var extraFrosting = false
     @Published var addSprinkles = false
 
-    @Published var name = ""
-    @Published var streetAddress = ""
-    @Published var city = ""
-    @Published var zip = ""
+    @Published var address = Address()
 
-    var hasValidAddress: Bool {
-        (name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty) == false
-    }
     var cost: Double {
         // $2 per cake
         var cost = Double(quantity) * 2
@@ -54,17 +55,46 @@ class Order: ObservableObject {
         return cost
     }
 
+    init() { }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Keys.self)
+
+        type = try container.decode(Int.self, forKey: .type)
+        quantity = try container.decode(Int.self, forKey: .quantity)
+
+        extraFrosting = try container.decode(Bool.self, forKey: .extraFrosting)
+        addSprinkles = try container.decode(Bool.self, forKey: .addSprinkles)
+
+        address = try container.decode(Address.self, forKey: .address)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Keys.self)
+
+        try container.encode(type, forKey: .type)
+        try container.encode(quantity, forKey: .quantity)
+
+        try container.encode(extraFrosting, forKey: .extraFrosting)
+        try container.encode(addSprinkles, forKey: .addSprinkles)
+
+        try container.encode(address, forKey: .address)
+    }
+
     static var preview: Order {
         let order = Order()
         order.type = 1
         order.quantity = 7
         order.specialRequestEnabled = true
         order.extraFrosting = true
-        
-        order.name = "Bam"
-        order.streetAddress = "Dzerzhinskaha 5"
-        order.city = "Minsk"
-        order.zip = "220036"
+
+        let address = Address()
+        address.name = "Bam"
+        address.streetAddress = "Dzerzhinskaha 5"
+        address.city = "Minsk"
+        address.zip = "220036"
+        order.address = address
+
         return order
     }
 }

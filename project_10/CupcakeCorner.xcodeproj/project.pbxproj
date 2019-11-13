@@ -16,6 +16,8 @@
 		41131D8C237B52930052571B /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41131D8B237B52930052571B /* Order.swift */; };
 		41131D8E237B55910052571B /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41131D8D237B55910052571B /* AddressView.swift */; };
 		41131D90237B56F50052571B /* CheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41131D8F237B56F50052571B /* CheckoutView.swift */; };
+		41131D92237BE3770052571B /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41131D91237BE3770052571B /* Address.swift */; };
+		41131D94237BE38C0052571B /* AddressBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41131D93237BE38C0052571B /* AddressBook.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		41131D8B237B52930052571B /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		41131D8D237B55910052571B /* AddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		41131D8F237B56F50052571B /* CheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutView.swift; sourceTree = "<group>"; };
+		41131D91237BE3770052571B /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
+		41131D93237BE38C0052571B /* AddressBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressBook.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +74,8 @@
 				41131D85237B22430052571B /* Info.plist */,
 				41131D82237B22430052571B /* LaunchScreen.storyboard */,
 				41131D8B237B52930052571B /* Order.swift */,
+				41131D91237BE3770052571B /* Address.swift */,
+				41131D93237BE38C0052571B /* AddressBook.swift */,
 				41131D7F237B22430052571B /* Preview Content */,
 				41131D79237B22400052571B /* SceneDelegate.swift */,
 			);
@@ -160,7 +166,9 @@
 				41131D90237B56F50052571B /* CheckoutView.swift in Sources */,
 				41131D8C237B52930052571B /* Order.swift in Sources */,
 				41131D7C237B22400052571B /* ContentView.swift in Sources */,
+				41131D94237BE38C0052571B /* AddressBook.swift in Sources */,
 				41131D8E237B55910052571B /* AddressView.swift in Sources */,
+				41131D92237BE3770052571B /* Address.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
