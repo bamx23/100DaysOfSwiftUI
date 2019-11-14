@@ -8,6 +8,12 @@
 
 import Foundation
 
+extension String {
+    var isEmptyOrWhitespaced: Bool {
+        isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
+
 final class Address: ObservableObject, Codable, Identifiable {
     private enum Keys: String, CodingKey {
         case name = "name"
@@ -25,7 +31,7 @@ final class Address: ObservableObject, Codable, Identifiable {
         "\(name): \(streetAddress), \(city), \(zip)"
     }
     var isValid: Bool {
-        (name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty) == false
+        [name, streetAddress, city, zip].filter{ $0.isEmptyOrWhitespaced }.isEmpty
     }
 
     init() { }
@@ -49,7 +55,7 @@ final class Address: ObservableObject, Codable, Identifiable {
     }
 
     func clone() -> Address {
-        var result = Address()
+        let result = Address()
         result.name = name
         result.streetAddress = streetAddress
         result.city = city
