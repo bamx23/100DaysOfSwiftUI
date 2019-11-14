@@ -14,7 +14,7 @@ extension String {
     }
 }
 
-struct Address: Codable, Identifiable {
+struct Address: Codable, Identifiable, Equatable {
     var name = ""
     var street_address = ""
     var city = ""

@@ -13,6 +13,15 @@ struct AddressView: View {
     
     @ObservedObject var order: Order
 
+    var addToAddressBookButton: some View {
+        Button("Add to address book") {
+            withAnimation {
+                self.addressBook.list.append(self.order.address)
+            }
+        }
+        .disabled(order.address.isValid == false || self.addressBook.list.contains(self.order.address))
+    }
+
     var body: some View {
         Form {
             Section(header: Text("Address book")) {
@@ -25,16 +34,11 @@ struct AddressView: View {
                     .onDelete(perform: { self.addressBook.list.remove(atOffsets: $0) })
                 }
             }
-            Section(header: Text("New address")) {
+            Section(header: Text("New address"), footer: addToAddressBookButton) {
                 TextField("Name", text: $order.address.name)
                 TextField("Street Address", text: $order.address.street_address)
                 TextField("City", text: $order.address.city)
                 TextField("Zip", text: $order.address.zip)
-
-                Button("Add to address book") {
-                    self.addressBook.list.append(self.order.address)
-                }
-                .disabled(order.address.isValid == false)
             }
 
             Section {
