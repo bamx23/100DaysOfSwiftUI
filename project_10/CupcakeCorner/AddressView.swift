@@ -56,6 +56,7 @@ struct AddressView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             AddressView(order: Order.preview)
+                .environmentObject(AddressBook())
         }
     }
 }
