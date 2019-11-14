@@ -88,9 +88,9 @@ final class Order: ObservableObject, Codable {
         order.specialRequestEnabled = true
         order.extraFrosting = true
 
-        let address = Address()
+        var address = Address()
         address.name = "Bam"
-        address.streetAddress = "Dzerzhinskaha 5"
+        address.street_address = "Dzerzhinskaha 5"
         address.city = "Minsk"
         address.zip = "220036"
         order.address = address

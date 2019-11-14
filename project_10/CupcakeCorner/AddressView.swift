@@ -19,7 +19,7 @@ struct AddressView: View {
                 List {
                     ForEach(addressBook.list) { address in
                         Button(address.id) {
-                            self.order.address = address.clone()
+                            self.order.address = address
                         }
                     }
                     .onDelete(perform: { self.addressBook.list.remove(atOffsets: $0) })
@@ -27,12 +27,12 @@ struct AddressView: View {
             }
             Section(header: Text("New address")) {
                 TextField("Name", text: $order.address.name)
-                TextField("Street Address", text: $order.address.streetAddress)
+                TextField("Street Address", text: $order.address.street_address)
                 TextField("City", text: $order.address.city)
                 TextField("Zip", text: $order.address.zip)
 
                 Button("Add to address book") {
-                    self.addressBook.list.append(self.order.address.clone())
+                    self.addressBook.list.append(self.order.address)
                 }
                 .disabled(order.address.isValid == false)
             }
