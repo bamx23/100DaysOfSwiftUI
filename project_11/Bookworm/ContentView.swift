@@ -41,7 +41,7 @@ struct ContentView: View {
         NavigationView {
             List{
                 ForEach(books, id: \.id) { book in
-                    NavigationLink(destination: Text(book.title ?? "No Title")) {
+                    NavigationLink(destination: DetailView(book: book)) {
                         EmojiRatingView(rating: book.rating)
                             .font(.largeTitle)
 
@@ -54,15 +54,15 @@ struct ContentView: View {
                     }
                 } 
             }
-                .navigationBarTitle("Bookworm")
-                .navigationBarItems(trailing: Button(action: {
-                    self.showingAddScreen.toggle()
-                }) {
-                    Image(systemName: "plus")
-                })
-                .sheet(isPresented: $showingAddScreen) {
-                    AddBookView().environment(\.managedObjectContext, self.moc)
-                }
+            .navigationBarTitle("Bookworm")
+            .navigationBarItems(trailing: Button(action: {
+                self.showingAddScreen.toggle()
+            }) {
+                Image(systemName: "plus")
+            })
+            .sheet(isPresented: $showingAddScreen) {
+                AddBookView().environment(\.managedObjectContext, self.moc)
+            }
         }
     }
 }
