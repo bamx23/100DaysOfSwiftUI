@@ -27,18 +27,27 @@ struct DetailView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                ZStack(alignment: .bottomTrailing) {
-                    Image(self.book.genreType.imageName)
-                        .frame(maxWidth: geometry.size.width)
+                ZStack(alignment: .bottomLeading) {
+                    ZStack(alignment: .bottomTrailing) {
+                        Image(self.book.genreType.imageName)
+                            .frame(maxWidth: geometry.size.width)
 
-                    Text(self.book.genreType.badgeTitle)
-                        .font(.caption)
-                        .fontWeight(.black)
+                        Text(self.book.genreType.badgeTitle)
+                            .font(.caption)
+                            .fontWeight(.black)
+                            .padding(8)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.75))
+                            .clipShape(Capsule())
+                            .offset(x: -5, y: -5)
+                    }
+                    Text(self.book.dateString)
+                        .font(.subheadline)
                         .padding(8)
                         .foregroundColor(.white)
                         .background(Color.black.opacity(0.75))
                         .clipShape(Capsule())
-                        .offset(x: -5, y: -5)
+                        .offset(x: 5, y: -5)
                 }
                 Text(self.book.author ?? "Unknown author")
                     .font(.title)

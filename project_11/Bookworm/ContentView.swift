@@ -31,6 +31,18 @@ struct PushButton: View {
     }
 }
 
+extension Book {
+    var dateString: String {
+        guard let date = date else {
+            return "no date"
+        }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+}
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
 
@@ -61,7 +73,10 @@ struct ContentView: View {
                         VStack(alignment: .leading) {
                             Text(book.title ?? "No Title")
                                 .font(.headline)
+                                .foregroundColor(book.rating == 1 ? .red : .primary)
                             Text(book.author ?? "Unknown Author")
+                                .foregroundColor(.secondary)
+                            Text(book.dateString)
                                 .foregroundColor(.secondary)
                         }
                     }
