@@ -12,12 +12,10 @@ struct AddBookView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.presentationMode) var presentationMode
 
-    private let genres = ["Fantasy", "Horror", "Kids", "Mystery", "Poetry", "Romance", "Thriller"]
-
     @State private var title = ""
     @State private var author = ""
     @State private var rating = 3
-    @State private var genre = ""
+    @State private var genre = Genre.defaultGenre
     @State private var review = ""
 
     private func addBook() {
@@ -26,7 +24,7 @@ struct AddBookView: View {
         newBook.title = title
         newBook.author = author
         newBook.rating = Int16(rating)
-        newBook.genre = genre
+        newBook.genre = genre.rawValue
         newBook.review = review
 
         try? moc.save()
@@ -38,10 +36,11 @@ struct AddBookView: View {
                 Section {
                     TextField("Name of book", text: $title)
                     TextField("Author's name", text: $author)
+                        .textContentType(.name)
 
                     Picker("Genre", selection: $genre) {
-                        ForEach(genres, id: \.self) {
-                            Text($0)
+                        ForEach(Genre.allCases, id: \.self) {
+                            Text($0.title)
                         }
                     }
                 }
