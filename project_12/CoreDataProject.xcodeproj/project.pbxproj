@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4104144623869E9500E461CF /* Singer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4104144423869E9500E461CF /* Singer+CoreDataClass.swift */; };
+		4104144723869E9500E461CF /* Singer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4104144523869E9500E461CF /* Singer+CoreDataProperties.swift */; };
 		414695D72383C0F800AE37E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 414695D62383C0F800AE37E0 /* AppDelegate.swift */; };
 		414695D92383C0F800AE37E0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 414695D82383C0F800AE37E0 /* SceneDelegate.swift */; };
 		414695DC2383C0F800AE37E0 /* CoreDataProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 414695DA2383C0F800AE37E0 /* CoreDataProject.xcdatamodeld */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4104144423869E9500E461CF /* Singer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Singer+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4104144523869E9500E461CF /* Singer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Singer+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		414695D32383C0F800AE37E0 /* CoreDataProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDataProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		414695D62383C0F800AE37E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		414695D82383C0F800AE37E0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +71,8 @@
 				414695D62383C0F800AE37E0 /* AppDelegate.swift */,
 				414695D82383C0F800AE37E0 /* SceneDelegate.swift */,
 				414695DD2383C0F800AE37E0 /* ContentView.swift */,
+				4104144423869E9500E461CF /* Singer+CoreDataClass.swift */,
+				4104144523869E9500E461CF /* Singer+CoreDataProperties.swift */,
 				414695DF2383C0FB00AE37E0 /* Assets.xcassets */,
 				414695E42383C0FB00AE37E0 /* LaunchScreen.storyboard */,
 				414695E72383C0FB00AE37E0 /* Info.plist */,
@@ -155,10 +161,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4104144623869E9500E461CF /* Singer+CoreDataClass.swift in Sources */,
 				414695D72383C0F800AE37E0 /* AppDelegate.swift in Sources */,
 				414695D92383C0F800AE37E0 /* SceneDelegate.swift in Sources */,
 				414695DE2383C0F800AE37E0 /* ContentView.swift in Sources */,
 				414695EF2383C2E500AE37E0 /* Movie+CoreDataClass.swift in Sources */,
+				4104144723869E9500E461CF /* Singer+CoreDataProperties.swift in Sources */,
 				414695F02383C2E500AE37E0 /* Movie+CoreDataProperties.swift in Sources */,
 				414695DC2383C0F800AE37E0 /* CoreDataProject.xcdatamodeld in Sources */,
 			);

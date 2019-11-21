@@ -9,36 +9,58 @@
 import SwiftUI
 import CoreData
 
+struct FilteredList<T: NSManagedObject, V: View>: View {
+
+    var fetchRequest: FetchRequest<T>
+    var values: FetchedResults<T> { fetchRequest.wrappedValue }
+    var subBody: (T) -> V
+
+    init(key: String, filter: String, @ViewBuilder subBody: @escaping (T) -> V) {
+        fetchRequest = FetchRequest<T>(entity: T.entity(),
+                                       sortDescriptors: [],
+                                       predicate: NSPredicate(format: "\(key) BEGINSWITH %@", filter))
+        self.subBody = subBody
+    }
+
+    var body: some View {
+        List(values, id: \.self) { value in
+            self.subBody(value)
+        }
+    }
+}
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(entity: Ship.entity(),
-                  sortDescriptors: [],
-                  predicate: NSPredicate(format: "universe == %@", "Star Wars")) var ships: FetchedResults<Ship>
+    @State var lastNameFilter = "A"
 
     var body: some View {
         VStack {
-            List(ships, id: \.self) { ship in
-                Text(ship.name ?? "Unknown name")
+            FilteredList(key: "lastName", filter: lastNameFilter) { (singer: Singer) in
+                Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
 
             Button("Add Examples") {
-                let ship1 = Ship(context: self.moc)
-                ship1.name = "Enterprise"
-                ship1.universe = "Star Trek"
+                let taylor = Singer(context: self.moc)
+                taylor.firstName = "Taylor"
+                taylor.lastName = "Swift"
 
-                let ship2 = Ship(context: self.moc)
-                ship2.name = "Defiant"
-                ship2.universe = "Star Trek"
+                let ed = Singer(context: self.moc)
+                ed.firstName = "Ed"
+                ed.lastName = "Sheeran"
 
-                let ship3 = Ship(context: self.moc)
-                ship3.name = "Millennium Falcon"
-                ship3.universe = "Star Wars"
-
-                let ship4 = Ship(context: self.moc)
-                ship4.name = "Executor"
-                ship4.universe = "Star Wars"
+                let adele = Singer(context: self.moc)
+                adele.firstName = "Adele"
+                adele.lastName = "Adkins"
 
                 try? self.moc.save()
+            }
+
+            Button("Show A") {
+                self.lastNameFilter = "A"
+            }
+
+            Button("Show S") {
+                self.lastNameFilter = "S"
             }
         }
     }
