@@ -9,68 +9,110 @@
 import SwiftUI
 import CoreData
 
+enum SortString<T> {
+    case ascending(_ path: ReferenceWritableKeyPath<T, String?>)
+    case descending(_ path: ReferenceWritableKeyPath<T, String?>)
+}
+
+extension SortString {
+    var descriptor: NSSortDescriptor {
+        switch self {
+        case .ascending(let path):
+            return NSSortDescriptor(keyPath: path, ascending: true)
+        case .descending(let path):
+            return NSSortDescriptor(keyPath: path, ascending: false)
+        }
+    }
+}
+
+enum FilterString {
+    case contains(_ value: String)
+    case beginsWith(_ value: String)
+}
+
+extension KeyPath where Root: NSObject {
+    func filtered(_ filter: FilterString) -> NSPredicate {
+        let keyName = NSExpression(forKeyPath: self).keyPath
+        switch filter {
+        case .contains(let substring):
+            return NSPredicate(format: "\(keyName) CONTAINS %@", substring)
+        case .beginsWith(let prefix):
+            return NSPredicate(format: "\(keyName) BEGINSWITH %@", prefix)
+        }
+    }
+}
+
 struct FilteredList<T: NSManagedObject, V: View>: View {
 
     var fetchRequest: FetchRequest<T>
     var values: FetchedResults<T> { fetchRequest.wrappedValue }
-    var subBody: (T) -> V
+    var content: (T) -> V
 
-    init(key: String, filter: String, @ViewBuilder subBody: @escaping (T) -> V) {
+    init(sort: [SortString<T>], filter: (KeyPath<T, String?>, FilterString), @ViewBuilder content: @escaping (T) -> V) {
+        let sortDescriptors = sort.map { $0.descriptor }
         fetchRequest = FetchRequest<T>(entity: T.entity(),
-                                       sortDescriptors: [],
-                                       predicate: NSPredicate(format: "\(key) BEGINSWITH %@", filter))
-        self.subBody = subBody
+                                       sortDescriptors: sortDescriptors,
+                                       predicate: filter.0.filtered(filter.1))
+        self.content = content
     }
 
     var body: some View {
         List(values, id: \.self) { value in
-            self.subBody(value)
+            self.content(value)
         }
     }
 }
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(entity: Country.entity(), sortDescriptors: []) var countries: FetchedResults<Country>
+    @State var lastNameFilter = "A"
+    @State var additionalSort = SortString.descending(\Singer.firstName)
 
     var body: some View {
         VStack {
-            List {
-                ForEach(countries, id: \.self) { country in
-                    Section(header: Text(country.wrappedFullName)) {
-                        ForEach(country.candyArray, id: \.self) { candy in
-                            Text(candy.wrappedName)
-                        }
-                    }
-                }
+            FilteredList(sort: [.ascending(\.lastName), additionalSort],
+                         filter: (\.lastName, .beginsWith(lastNameFilter))) { (singer: Singer) in
+                Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
 
-            Button("Add") {
-                let candy1 = Candy(context: self.moc)
-                candy1.name = "Mars"
-                candy1.origin = Country(context: self.moc)
-                candy1.origin?.shortName = "UK"
-                candy1.origin?.fullName = "United Kingdom"
+            Button("Add Examples") {
+                let taylor = Singer(context: self.moc)
+                taylor.firstName = "Taylor"
+                taylor.lastName = "Swift"
 
-                let candy2 = Candy(context: self.moc)
-                candy2.name = "KitKat"
-                candy2.origin = Country(context: self.moc)
-                candy2.origin?.shortName = "UK"
-                candy2.origin?.fullName = "United Kingdom"
+                let swiftA = Singer(context: self.moc)
+                swiftA.firstName = "A"
+                swiftA.lastName = "Swift"
 
-                let candy3 = Candy(context: self.moc)
-                candy3.name = "Twix"
-                candy3.origin = Country(context: self.moc)
-                candy3.origin?.shortName = "UK"
-                candy3.origin?.fullName = "United Kingdom"
+                let swiftB = Singer(context: self.moc)
+                swiftB.firstName = "B"
+                swiftB.lastName = "Swift"
 
-                let candy4 = Candy(context: self.moc)
-                candy4.name = "Toblerone"
-                candy4.origin = Country(context: self.moc)
-                candy4.origin?.shortName = "CH"
-                candy4.origin?.fullName = "Switzerland"
+                let ed = Singer(context: self.moc)
+                ed.firstName = "Ed"
+                ed.lastName = "Sheeran"
+
+                let adele = Singer(context: self.moc)
+                adele.firstName = "Adele"
+                adele.lastName = "Adkins"
 
                 try? self.moc.save()
+            }
+
+            Button("Show A") {
+                self.lastNameFilter = "A"
+            }
+
+            Button("Show S") {
+                self.lastNameFilter = "S"
+            }
+
+            Button("Sort ASC") {
+                self.additionalSort = .ascending(\.firstName)
+            }
+
+            Button("Sort DESC") {
+                self.additionalSort = .descending(\.firstName)
             }
         }
     }
