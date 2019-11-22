@@ -11,24 +11,51 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var storage: Storage
 
+    @State var nameFilter = ""
+
+    var filteredUsers: [User] { storage.users.filter {
+        nameFilter == "" || $0.name.lowercased().contains(nameFilter.lowercased()) }
+    }
+
     func avatar(for user: User) -> Image {
         if let avatar = storage.avatars[user.id] {
             return Image(uiImage: avatar)
         } else {
-            return Image(systemName: "person.circle.fill")
+            return Image(systemName: "person.crop.circle.fill")
         }
     }
 
     var body: some View {
-        List(storage.users) { user in
-            HStack {
-                self.avatar(for: user)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
-                Text(user.name)
+        NavigationView {
+            List {
+                TextField("Search", text: $nameFilter.animation())
+                ForEach(filteredUsers) { user in
+                    NavigationLink(destination: DetailView(user: user)) {
+                        HStack {
+                            ZStack(alignment: .bottomTrailing) {
+                                self.avatar(for: user)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .foregroundColor(.blue)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(user.isActive ? Color.blue : Color.gray, lineWidth: 3))
+                                Circle()
+                                    .frame(width: 15, height: 15)
+                                    .foregroundColor(user.isActive ? .blue : .gray)
+                                    .offset(x: -2, y: -2)
+                            }
+                            VStack(alignment: .leading) {
+                                Text(user.name)
+                                    .font(.headline)
+                                Spacer()
+                            }
+                        }
+                    }
+                }
             }
+            .navigationBarTitle("WeFriends")
         }
         .onAppear(perform: storage.load)
     }
