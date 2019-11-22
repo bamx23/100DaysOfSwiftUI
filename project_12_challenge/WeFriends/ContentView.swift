@@ -46,9 +46,29 @@ struct ContentView: View {
                                     .foregroundColor(user.isActive ? .blue : .gray)
                                     .offset(x: -2, y: -2)
                             }
-                            VStack(alignment: .leading) {
-                                Text(user.name)
-                                    .font(.headline)
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(alignment: .center) {
+                                    Text("\(user.age)")
+                                        .font(.subheadline)
+                                        .padding(3)
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                                    Text(user.name)
+                                        .font(.headline)
+                                }
+                                HStack(alignment: .center, spacing: 2) {
+                                    Image(systemName: "briefcase.fill")
+                                        .padding(3)
+                                    Text(user.company)
+                                }
+                                .font(.footnote)
+                                HStack(alignment: .center, spacing: 2) {
+                                    Image(systemName: "envelope.fill")
+                                        .padding(3)
+                                    Text(user.email)
+                                }
+                                .font(.footnote)
                                 Spacer()
                             }
                         }
