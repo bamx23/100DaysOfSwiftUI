@@ -9,7 +9,9 @@
 import Foundation
 
 struct User: Codable, Identifiable {
-    let id: UUID
+    typealias ID = UUID
+
+    let id: Self.ID
 
     let registered: Date
     let isActive: Bool
