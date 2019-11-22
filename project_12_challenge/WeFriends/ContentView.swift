@@ -9,13 +9,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var storage: Storage
+
     var body: some View {
-        Text("Hello, World!")
+        List(storage.users) { user in
+            Text(user.name)
+        }
+        .onAppear(perform: storage.load)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(Storage())
     }
 }
