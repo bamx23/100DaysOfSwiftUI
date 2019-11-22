@@ -38,7 +38,7 @@ final class Storage: ObservableObject {
     }
 
     private func loadAvatar(for user: User) {
-        let url = URL(string: "https://api.adorable.io/avatars/285/\(user.email).png")!
+        let url = URL(string: "https://api.adorable.io/avatars/500/\(user.email).png")!
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 return

@@ -18,6 +18,7 @@
 		410414772387FA2900E461CF /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410414762387FA2900E461CF /* Friend.swift */; };
 		410414792387FA9200E461CF /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 410414782387FA9200E461CF /* Storage.swift */; };
 		41765EA8238860C50050753A /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41765EA7238860C50050753A /* DetailView.swift */; };
+		41765EAC2388828D0050753A /* UserCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41765EAB2388828D0050753A /* UserCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		410414762387FA2900E461CF /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		410414782387FA9200E461CF /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		41765EA7238860C50050753A /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		41765EAB2388828D0050753A /* UserCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				4104145C2387F92F00E461CF /* AppDelegate.swift */,
 				4104145E2387F92F00E461CF /* SceneDelegate.swift */,
 				410414632387F92F00E461CF /* ContentView.swift */,
+				41765EAB2388828D0050753A /* UserCardView.swift */,
 				41765EA7238860C50050753A /* DetailView.swift */,
 				410414652387F93100E461CF /* Assets.xcassets */,
 				4104146A2387F93100E461CF /* LaunchScreen.storyboard */,
@@ -172,6 +175,7 @@
 				410414622387F92F00E461CF /* WeFriends.xcdatamodeld in Sources */,
 				41765EA8238860C50050753A /* DetailView.swift in Sources */,
 				410414792387FA9200E461CF /* Storage.swift in Sources */,
+				41765EAC2388828D0050753A /* UserCardView.swift in Sources */,
 				4104145D2387F92F00E461CF /* AppDelegate.swift in Sources */,
 				410414642387F92F00E461CF /* ContentView.swift in Sources */,
 				410414772387FA2900E461CF /* Friend.swift in Sources */,

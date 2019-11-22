@@ -27,3 +27,21 @@ struct User: Codable, Identifiable {
 
     let friends: [Friend]
 }
+
+extension User {
+    static var sample: User {
+        User(
+            id: User.ID(),
+            registered: Date(),
+            isActive: true,
+            name: "Nikolay",
+            age: 26,
+            company: "Yandex",
+            about: "iOS Developer. Learing SwiftUI.",
+            email: "bamx23@gmail.com",
+            address: "Minsk, Belarus",
+            tags: ["dev", "yandex"],
+            friends: []
+        )
+    }
+}
