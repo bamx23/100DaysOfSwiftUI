@@ -10,24 +10,6 @@ import Foundation
 import CoreData
 
 extension User: Identifiable {
-//    static var sample: User {
-//        User(
-//            id: UUID(),
-//            registered: Date(),
-//            isActive: true,
-//            name: "Nikolay",
-//            age: 26,
-//            company: "Yandex",
-//            about: "iOS Developer. Learing SwiftUI.",
-//            email: "bamx23@gmail.com",
-//            address: "Minsk, Belarus",
-//            tags: ["dev", "yandex"],
-//            friends: []
-//        )
-//    }
-//
-//    ini
-
     var wrappedName: String { name ?? "Unknown" }
     var wrappedAge: Int { Int(age) }
 

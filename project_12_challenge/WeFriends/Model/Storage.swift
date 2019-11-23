@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
+import SwiftUI
 
 final class Storage: ObservableObject {
     private static let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
@@ -36,7 +37,7 @@ final class Storage: ObservableObject {
                     for user in users {
                         self.addFriends(for: user, newUsers: newUsers)
                     }
-                    
+
                     try? self.context.save()
 
                     for user in users {
@@ -126,5 +127,14 @@ extension Storage {
         let tags: [String]
 
         let friends: [FriendModel]
+    }
+}
+
+extension Storage {
+    static var mock: Storage {
+        Storage(context: NSPersistentContainer(name: "WeFriends").viewContext)
+    }
+    var userMock: User {
+        User(context: context)
     }
 }

@@ -16,10 +16,6 @@ struct ContentView: View {
 
     @State var nameFilter = ""
 
-//    var filteredUsers: [User] { users.filter {
-//        nameFilter == "" || $0.name.lowercased().contains(nameFilter.lowercased()) }
-//    }
-
     var body: some View {
         NavigationView {
             List {
@@ -35,8 +31,6 @@ struct ContentView: View {
         .onAppear {
             if (self.users.count == 0) {
                 self.storage.load()
-            } else {
-                print(NSHomeDirectory())
             }
         }
     }
@@ -45,6 +39,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(Storage(context: NSPersistentContainer(name: "WeFriends").viewContext))
+            .environmentObject(Storage.mock)
     }
 }

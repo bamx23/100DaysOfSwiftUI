@@ -134,7 +134,8 @@ struct DetailView: View {
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            DetailView(user: User(context: NSPersistentContainer(name: "WeFriends").viewContext))
+            DetailView(user: Storage.mock.userMock)
+                .environment(\.managedObjectContext, Storage.mock.context)
         }
     }
 }

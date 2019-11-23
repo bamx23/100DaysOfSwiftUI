@@ -10,8 +10,6 @@ import SwiftUI
 import CoreData
 
 struct UserCardView: View {
-    @EnvironmentObject var storage: Storage
-
     let user: User
 
     var avatar: Image {
@@ -85,8 +83,6 @@ struct UserCardView: View {
 
 struct UserCardView_Previews: PreviewProvider {
     static var previews: some View {
-        let context = NSPersistentContainer(name: "WeFriends").viewContext
-        return UserCardView(user: User(context: context))
-            .environmentObject(Storage(context: context))
+        UserCardView(user: Storage.mock.userMock)
     }
 }
