@@ -7,41 +7,57 @@
 //
 
 import Foundation
+import CoreData
 
-struct User: Codable, Identifiable {
-    typealias ID = UUID
+extension User: Identifiable {
+//    static var sample: User {
+//        User(
+//            id: UUID(),
+//            registered: Date(),
+//            isActive: true,
+//            name: "Nikolay",
+//            age: 26,
+//            company: "Yandex",
+//            about: "iOS Developer. Learing SwiftUI.",
+//            email: "bamx23@gmail.com",
+//            address: "Minsk, Belarus",
+//            tags: ["dev", "yandex"],
+//            friends: []
+//        )
+//    }
+//
+//    ini
 
-    let id: Self.ID
+    var wrappedName: String { name ?? "Unknown" }
+    var wrappedAge: Int { Int(age) }
 
-    let registered: Date
-    let isActive: Bool
+    var wrappedCompany: String { company ?? "Unknown" }
+    var wrappedAbout: String { about ?? "No information" }
+    var wrappedEmail: String { email ?? "Unknown email" }
+    var wrappedAddress: String { address ?? "Unknown address" }
 
-    let name: String
-    let age: Int
-    let company: String
-    let about: String
+    var formattedRegistered: String {
+        guard let registered = registered else {
+            return "unknown"
+        }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .medium
+        return formatter.string(from: registered)
+    }
 
-    let email: String
-    let address: String
-    let tags: [String]
+    var tagsArray: [String] {
+        let tagsSet = tags as? Set<Tag> ?? []
+        return tagsSet
+            .map { $0.name ?? "" }
+            .filter { $0.count != 0 }
+            .sorted()
+    }
 
-    let friends: [Friend]
-}
-
-extension User {
-    static var sample: User {
-        User(
-            id: User.ID(),
-            registered: Date(),
-            isActive: true,
-            name: "Nikolay",
-            age: 26,
-            company: "Yandex",
-            about: "iOS Developer. Learing SwiftUI.",
-            email: "bamx23@gmail.com",
-            address: "Minsk, Belarus",
-            tags: ["dev", "yandex"],
-            friends: []
-        )
+    var friendsArray: [User] {
+        let friendsSet = friends as? Set<Friend> ?? []
+        return friendsSet
+            .flatMap { $0.target != nil ? [$0.target!] : [] }
+            .sorted { ($0.name ?? "") < ($1.name ?? "") }
     }
 }

@@ -7,18 +7,10 @@
 //
 
 import SwiftUI
-
-extension User {
-    var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .medium
-        return formatter.string(from: registered)
-    }
-}
+import CoreData
 
 struct DetailView: View {
-    @EnvironmentObject var storage: Storage
+    @Environment(\.managedObjectContext) var moc
 
     let user: User
     var showFriends = true
@@ -27,15 +19,15 @@ struct DetailView: View {
     @State private var friendToShow: User!
 
     func mailTo() {
-        let url = URL(string: "mailto:\(user.email)")!
+        let url = URL(string: "mailto:\(user.wrappedEmail)")!
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
     func avatar(geometry: GeometryProxy) -> some View {
         let size = min(geometry.size.width, geometry.size.height) * 0.8
         let view: Image!
-        if let image = storage.avatars[user.id] {
-            view = Image(uiImage: image)
+        if let imageData = user.avatar {
+            view = Image(uiImage: UIImage(data: imageData)!)
         } else {
             view = Image(systemName: "person.crop.circle.fill")
         }
@@ -55,9 +47,9 @@ struct DetailView: View {
                     HStack(alignment: .center, spacing: 2) {
                         Image(systemName: "calendar")
                             .padding(3)
-                        Text("Age: \(self.user.age)")
+                        Text("Age: \(self.user.wrappedAge)")
                     }
-                    Text(self.user.about)
+                    Text(self.user.wrappedAbout)
                 }
                 .padding(.leading, 20)
             }
@@ -67,7 +59,7 @@ struct DetailView: View {
                 HStack(alignment: .center, spacing: 2) {
                     Image(systemName: "tag.fill")
                         .padding(3)
-                    Text(self.user.tags.joined(separator: ", "))
+                    Text(self.user.tagsArray.joined(separator: ", "))
                 }
                 .padding(.leading, 20)
             }
@@ -79,13 +71,13 @@ struct DetailView: View {
                         Image(systemName: "envelope.fill")
                             .padding(3)
                         Button(action: self.mailTo) {
-                            Text(self.user.email)
+                            Text(self.user.wrappedEmail)
                         }
                     }
                     HStack(alignment: .center, spacing: 2) {
                         Image(systemName: "house.fill")
                             .padding(3)
-                        Text(self.user.address)
+                        Text(self.user.wrappedAddress)
                     }
                 }
                 .padding(.leading, 20)
@@ -107,7 +99,7 @@ struct DetailView: View {
                         .foregroundColor(.white)
                         .clipShape(Capsule())
                     self.infoView()
-                    Text("Registered: \(self.user.formattedDate)")
+                    Text("Registered: \(self.user.formattedRegistered)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
 
@@ -116,10 +108,10 @@ struct DetailView: View {
                         Text("Friends")
                             .font(.headline)
                         VStack(spacing: 0) {
-                            ForEach(self.user.friends) { friend in
-                                UserCardView(user: self.storage.users.first(where: { f in f.id == friend.id})!)
+                            ForEach(self.user.friendsArray) { friend in
+                                UserCardView(user: friend)
                                     .onTapGesture {
-                                        self.friendToShow = self.storage.users.first(where: { f in f.id == friend.id})!
+                                        self.friendToShow = friend
                                         self.showFriendPopup = true
                                     }
                             }
@@ -131,20 +123,18 @@ struct DetailView: View {
                 .padding()
             }
         }
-        .navigationBarTitle(Text(user.name), displayMode: .inline)
+        .navigationBarTitle(Text(user.wrappedName), displayMode: .inline)
         .sheet(isPresented: $showFriendPopup) {
             DetailView(user: self.friendToShow!, showFriends: false)
-                .environmentObject(self.storage)
+                .environment(\.managedObjectContext, self.moc)
         }
     }
 }
 
 struct DetailView_Previews: PreviewProvider {
-    static let user = User.sample
     static var previews: some View {
         NavigationView {
-            DetailView(user: user)
-                .environmentObject(Storage())
+            DetailView(user: User(context: NSPersistentContainer(name: "WeFriends").viewContext))
         }
     }
 }

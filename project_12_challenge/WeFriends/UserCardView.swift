@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct UserCardView: View {
     @EnvironmentObject var storage: Storage
@@ -14,8 +15,8 @@ struct UserCardView: View {
     let user: User
 
     var avatar: Image {
-        if let avatar = storage.avatars[user.id] {
-            return Image(uiImage: avatar)
+        if let avatar = user.avatar {
+            return Image(uiImage: UIImage(data: avatar)!)
         } else {
             return Image(systemName: "person.crop.circle.fill")
         }
@@ -39,25 +40,25 @@ struct UserCardView: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .center) {
-                    Text("\(user.age)")
+                    Text("\(user.wrappedAge)")
                         .font(.subheadline)
                         .padding(3)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 5))
-                    Text(user.name)
+                    Text(user.wrappedName)
                         .font(.headline)
                 }
                 HStack(alignment: .center, spacing: 2) {
                     Image(systemName: "briefcase.fill")
                         .padding(3)
-                    Text(user.company)
+                    Text(user.wrappedCompany)
                 }
                 .font(.footnote)
                 HStack(alignment: .center, spacing: 2) {
                     Image(systemName: "envelope.fill")
                         .padding(3)
-                    Text(user.email)
+                    Text(user.wrappedEmail)
                 }
                 .font(.footnote)
                 HStack(alignment: .center, spacing: 2) {
@@ -65,7 +66,7 @@ struct UserCardView: View {
                         .padding(3)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(user.tags, id: \.self) { tag in
+                            ForEach(user.tagsArray, id: \.self) { tag in
                                 Text(tag)
                                     .padding(3)
                                     .background(Color.yellow)
@@ -84,7 +85,8 @@ struct UserCardView: View {
 
 struct UserCardView_Previews: PreviewProvider {
     static var previews: some View {
-        UserCardView(user: User.sample)
-            .environmentObject(Storage())
+        let context = NSPersistentContainer(name: "WeFriends").viewContext
+        return UserCardView(user: User(context: context))
+            .environmentObject(Storage(context: context))
     }
 }
