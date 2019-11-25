@@ -7,28 +7,44 @@
 //
 
 import SwiftUI
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 struct ContentView: View {
-    @State private var showingActionSheet = false
-    @State private var backgroundColor = Color.white
+    @State private var image: Image?
 
     var body: some View {
-        Text("Hello, World!")
-            .frame(width: 300, height: 300)
-            .background(backgroundColor)
-            .onTapGesture {
-                self.showingActionSheet = true
+        VStack {
+            image?
+                .resizable()
+                .scaledToFit()
         }
-        .actionSheet(isPresented: $showingActionSheet) {
-            ActionSheet(title: Text("Change background"),
-                        message: Text("Select a new color"),
-                        buttons: [
-                            .default(Text("Red")) { self.backgroundColor = .red },
-                            .default(Text("Green")) { self.backgroundColor = .green },
-                            .default(Text("Blue")) { self.backgroundColor = .blue },
-                            .cancel()
-                        ])
+        .onAppear(perform: loadImage)
+    }
+
+    func loadImage() {
+        guard let inputImage = UIImage(named: "Example") else {
+            fatalError("Image not found")
         }
+        let beginImage = CIImage(image: inputImage)
+        let context = CIContext()
+
+        let sepiaFilter = CIFilter.sepiaTone()
+        sepiaFilter.inputImage = beginImage
+        sepiaFilter.intensity = 1.0
+
+        let crystalizeFilter = CIFilter.crystallize()
+//        crystalizeFilter.inputImage = sepiaFilter.outputImage
+        crystalizeFilter.setValue(sepiaFilter.outputImage, forKey: kCIInputImageKey)
+        crystalizeFilter.radius = 20
+
+        guard let outputImage = crystalizeFilter.outputImage else {
+            return
+        }
+        guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
+            return
+        }
+        image = Image(uiImage: UIImage(cgImage: cgImage))
     }
 }
 
