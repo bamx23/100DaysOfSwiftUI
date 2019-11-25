@@ -12,39 +12,21 @@ import CoreImage.CIFilterBuiltins
 
 struct ContentView: View {
     @State private var image: Image?
+    @State private var showingImagePicker = false
 
     var body: some View {
         VStack {
             image?
                 .resizable()
                 .scaledToFit()
-        }
-        .onAppear(perform: loadImage)
-    }
 
-    func loadImage() {
-        guard let inputImage = UIImage(named: "Example") else {
-            fatalError("Image not found")
+            Button("Select Image") {
+                self.showingImagePicker = true
+            }
         }
-        let beginImage = CIImage(image: inputImage)
-        let context = CIContext()
-
-        let sepiaFilter = CIFilter.sepiaTone()
-        sepiaFilter.inputImage = beginImage
-        sepiaFilter.intensity = 1.0
-
-        let crystalizeFilter = CIFilter.crystallize()
-//        crystalizeFilter.inputImage = sepiaFilter.outputImage
-        crystalizeFilter.setValue(sepiaFilter.outputImage, forKey: kCIInputImageKey)
-        crystalizeFilter.radius = 20
-
-        guard let outputImage = crystalizeFilter.outputImage else {
-            return
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker()
         }
-        guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
-            return
-        }
-        image = Image(uiImage: UIImage(cgImage: cgImage))
     }
 }
 
