@@ -35,7 +35,13 @@ struct ContentView: View {
                 guard let image = self.inputImage else {
                     return
                 }
-                ImageSaver.shared.saveImageToAlbum(image)
+                ImageSaver.shared.saveImageToAlbum(image) { error in
+                    if let error = error {
+                        print("Error: \(error)")
+                    } else {
+                        print("Saved!")
+                    }
+                }
             }
         }
         .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
