@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var inputImage: UIImage?
     @State private var image: Image?
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
-    @State private var filterIntensity = 0.5
+    @State private var filterOptions: [FilterOption:Double] = [:]
 
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
@@ -32,15 +32,9 @@ struct ContentView: View {
     }
 
     func applyProcessing() {
-        let inputKeys = currentFilter.inputKeys
-        if inputKeys.contains(kCIInputIntensityKey) {
-            currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey)
-        }
-        if inputKeys.contains(kCIInputRadiusKey) {
-            currentFilter.setValue(filterIntensity * 200, forKey: kCIInputRadiusKey)
-        }
-        if inputKeys.contains(kCIInputScaleKey) {
-            currentFilter.setValue(filterIntensity * 10, forKey: kCIInputScaleKey)
+        for option in FilterOption.allCases(forFilter: currentFilter) {
+            let value = self.filterOptions[option] ?? option.defaultValue
+            currentFilter.setValue(value, forKey: option.key)
         }
 
         guard let outputImage = currentFilter.outputImage else { return }
@@ -56,18 +50,25 @@ struct ContentView: View {
         loadImage()
     }
 
-    var body: some View {
-        let intensity = Binding<Double>(
+    func slider(for option: FilterOption) -> some View {
+        let optionBinding = Binding<Double>(
             get: {
-                self.filterIntensity
+                self.filterOptions[option] ?? option.defaultValue
             },
             set: {
-                self.filterIntensity = $0
+                self.filterOptions[option] = $0
                 self.applyProcessing()
             }
         )
 
-        return NavigationView {
+        return HStack {
+            Text(option.name)
+            Slider(value: optionBinding, in: option.range)
+        }.id(option.id)
+    }
+
+    var body: some View {
+        NavigationView {
             VStack {
                 ZStack {
                     Rectangle()
@@ -87,10 +88,10 @@ struct ContentView: View {
                     self.showingImagePicker = true
                 }
 
-                HStack {
-                    Text("Intensity")
-                    Slider(value: intensity)
-                }.padding(.vertical)
+                ForEach(FilterOption.allCases(forFilter: currentFilter)) { option in
+                    self.slider(for: option)
+                        .padding(.vertical)
+                }
 
                 HStack {
                     Button("Change Filter") {
