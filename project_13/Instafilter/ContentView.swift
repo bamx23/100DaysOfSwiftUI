@@ -12,6 +12,7 @@ import CoreImage.CIFilterBuiltins
 
 struct ContentView: View {
     @State private var inputImage: UIImage?
+    @State private var processedImage: UIImage?
     @State private var image: Image?
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     @State private var filterOptions: [FilterOption:Double] = [:]
@@ -40,14 +41,29 @@ struct ContentView: View {
         guard let outputImage = currentFilter.outputImage else { return }
 
         if let cgimg = context.createCGImage(outputImage, from: outputImage.extent) {
-            let uiImage = UIImage(cgImage: cgimg)
-            image = Image(uiImage: uiImage)
+            processedImage = UIImage(cgImage: cgimg)
+            if let processedImage = processedImage {
+                image = Image(uiImage: processedImage)
+            }
         }
     }
 
     func setFilter(_ filter: CIFilter) {
         currentFilter = filter
         loadImage()
+    }
+
+    func saveImage() {
+        guard let processedImage = self.processedImage else {
+            return
+        }
+        ImageSaver.shared.saveImageToAlbum(processedImage) { error in
+            if let error = error {
+                print("Failed to save image: \(error)")
+            } else {
+                print("Success")
+            }
+        }
     }
 
     func slider(for option: FilterOption) -> some View {
@@ -101,7 +117,7 @@ struct ContentView: View {
                     Spacer()
 
                     Button("Save") {
-                        // save the picture
+                        self.saveImage()
                     }
                 }
             }
