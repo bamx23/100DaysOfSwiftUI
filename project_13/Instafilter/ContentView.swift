@@ -11,14 +11,21 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 
 struct ContentView: View {
+    static let defaultFilter = Filter.sepiaTone()
+
     @State private var inputImage: UIImage?
     @State private var processedImage: UIImage?
     @State private var image: Image?
-    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
+    @State private var currentFilter = Self.defaultFilter.ciFilter()
+    @State private var currentFilterName = Self.defaultFilter.name
     @State private var filterOptions: [FilterOption:Double] = [:]
+
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
 
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
+    @State private var showingAlert = false
 
     let context = CIContext()
 
@@ -33,6 +40,8 @@ struct ContentView: View {
     }
 
     func applyProcessing() {
+        guard inputImage != nil else { return }
+
         for option in FilterOption.allCases(forFilter: currentFilter) {
             let value = self.filterOptions[option] ?? option.defaultValue
             currentFilter.setValue(value, forKey: option.key)
@@ -48,8 +57,11 @@ struct ContentView: View {
         }
     }
 
-    func setFilter(_ filter: CIFilter) {
-        currentFilter = filter
+    func setFilter(_ filter: Filter) {
+        withAnimation {
+            currentFilterName = filter.name
+            currentFilter = filter.ciFilter()
+        }
         loadImage()
     }
 
@@ -59,10 +71,13 @@ struct ContentView: View {
         }
         ImageSaver.shared.saveImageToAlbum(processedImage) { error in
             if let error = error {
-                print("Failed to save image: \(error)")
+                self.alertTitle = "Failed to save image"
+                self.alertMessage = error.localizedDescription
             } else {
-                print("Success")
+                self.alertTitle = "Image saved"
+                self.alertMessage = ""
             }
+            self.showingAlert = true
         }
     }
 
@@ -110,15 +125,17 @@ struct ContentView: View {
                 }
 
                 HStack {
-                    Button("Change Filter") {
+                    Button(currentFilterName) {
                         self.showingFilterSheet = true
                     }
+                    .animation(nil)
 
                     Spacer()
 
                     Button("Save") {
                         self.saveImage()
                     }
+                    .disabled(processedImage == nil)
                 }
             }
             .padding([.horizontal, .bottom])
@@ -128,16 +145,14 @@ struct ContentView: View {
             ImagePicker(image: self.$inputImage)
         }
         .actionSheet(isPresented: $showingFilterSheet) {
-            ActionSheet(title: Text("Select a filter"), buttons: [
-                .default(Text("Crystallize")) { self.setFilter(CIFilter.crystallize()) },
-                .default(Text("Edges")) { self.setFilter(CIFilter.edges()) },
-                .default(Text("Gaussian Blur")) { self.setFilter(CIFilter.gaussianBlur()) },
-                .default(Text("Pixellate")) { self.setFilter(CIFilter.pixellate()) },
-                .default(Text("Sepia Tone")) { self.setFilter(CIFilter.sepiaTone()) },
-                .default(Text("Unsharp Mask")) { self.setFilter(CIFilter.unsharpMask()) },
-                .default(Text("Vignette")) { self.setFilter(CIFilter.vignette()) },
-                .cancel()
-            ])
+            ActionSheet(title: Text("Select a filter"), buttons:
+                Filter.allFilters.map { filter in
+                    .default(Text(filter.name)) { self.setFilter(filter) }
+                } + [.cancel()]
+            )
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text(self.alertTitle), message: Text(self.alertMessage), dismissButton: .default(Text("OK")))
         }
     }
 }
