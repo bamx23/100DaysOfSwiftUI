@@ -13,6 +13,7 @@
 		41A86BDB2394192400985880 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41A86BDA2394192400985880 /* Assets.xcassets */; };
 		41A86BDE2394192400985880 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41A86BDD2394192400985880 /* Preview Assets.xcassets */; };
 		41A86BE12394192400985880 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41A86BDF2394192400985880 /* LaunchScreen.storyboard */; };
+		41A86BE9239435BF00985880 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A86BE8239435BF00985880 /* MapView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		41A86BDD2394192400985880 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41A86BE02394192400985880 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		41A86BE22394192400985880 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41A86BE8239435BF00985880 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				41A86BD42394192100985880 /* AppDelegate.swift */,
 				41A86BD62394192100985880 /* SceneDelegate.swift */,
 				41A86BD82394192100985880 /* ContentView.swift */,
+				41A86BE8239435BF00985880 /* MapView.swift */,
 				41A86BDA2394192400985880 /* Assets.xcassets */,
 				41A86BDF2394192400985880 /* LaunchScreen.storyboard */,
 				41A86BE22394192400985880 /* Info.plist */,
@@ -147,6 +150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				41A86BD52394192100985880 /* AppDelegate.swift in Sources */,
+				41A86BE9239435BF00985880 /* MapView.swift in Sources */,
 				41A86BD72394192100985880 /* SceneDelegate.swift in Sources */,
 				41A86BD92394192100985880 /* ContentView.swift in Sources */,
 			);
