@@ -7,45 +7,51 @@
 //
 
 import SwiftUI
-import MapKit
+import YandexMapKit
 
 struct MapView: UIViewRepresentable {
-    class Coordinator: NSObject, MKMapViewDelegate {
-        var parent: MapView
+//    class Coordinator: NSObject, YMKDelegate {
+//        var parent: MapView
+//
+//        init(_ parent: MapView) {
+//            self.parent = parent
+//        }
+//
+//        func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
+//            print(mapView.centerCoordinate)
+//        }
+//
+//        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
+//            view.canShowCallout = true
+//            return view
+//        }
+//    }
 
-        init(_ parent: MapView) {
-            self.parent = parent
-        }
+    func makeUIView(context: UIViewRepresentableContext<MapView>) -> YMKMapView {
+        let mapView = YMKMapView()
 
-        func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-            print(mapView.centerCoordinate)
-        }
+        let mapObjects = mapView.mapWindow.map.mapObjects
 
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
-            view.canShowCallout = true
-            return view
-        }
-    }
+        let annotation = mapObjects.addPlacemark(with: YMKPoint(latitude: 51.5, longitude: 0.13))
+        annotation.isDraggable = false
+        
+//        mapView.delegate = context.coordinator
 
-    func makeUIView(context: UIViewRepresentableContext<MapView>) -> MKMapView {
-        let mapView = MKMapView()
-        mapView.delegate = context.coordinator
-
-        let annotation = MKPointAnnotation()
-        annotation.title = "London"
-        annotation.subtitle = "Capital of England"
-        annotation.coordinate = CLLocationCoordinate2D(latitude: 51.5, longitude: 0.13)
-        mapView.addAnnotation(annotation)
+//        let annotation = MKPointAnnotation()
+//        annotation.title = "London"
+//        annotation.subtitle = "Capital of England"
+//        annotation.coordinate = CLLocationCoordinate2D(latitude: 51.5, longitude: 0.13)
+//        mapView.addAnnotation(annotation)
 
         return mapView
     }
 
-    func updateUIView(_ uiView: MKMapView, context: UIViewRepresentableContext<MapView>) {
+    func updateUIView(_ uiView: YMKMapView, context: UIViewRepresentableContext<MapView>) {
 
     }
 
-    func makeCoordinator() -> MapView.Coordinator { .init(self) }
+//    func makeCoordinator() -> MapView.Coordinator { .init(self) }
 }
 
 struct MapView_Previews: PreviewProvider {

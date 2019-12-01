@@ -1,0 +1,20 @@
+PODS:
+  - YandexMapKit (3.4):
+    - YandexRuntime (= 3.4)
+  - YandexRuntime (3.4)
+
+DEPENDENCIES:
+  - YandexMapKit
+
+SPEC REPOS:
+  trunk:
+    - YandexMapKit
+    - YandexRuntime
+
+SPEC CHECKSUMS:
+  YandexMapKit: f222923561fe159dd8480d927f61950fc5ff3b8d
+  YandexRuntime: 2547d72a3ce4757f16ad188cfbe8a124ae13d806
+
+PODFILE CHECKSUM: 4a86f16259be189dc1cdc10cb806d353233241e4
+
+COCOAPODS: 1.8.4
