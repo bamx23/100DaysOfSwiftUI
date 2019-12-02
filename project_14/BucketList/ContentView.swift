@@ -14,6 +14,8 @@ struct ContentView: View {
 
     @State private var isUnlocked = false
     @State private var centerCoordinate = CLLocationCoordinate2D()
+    @State private var selectedPlace: MKPointAnnotation?
+    @State private var showingPlaceDetails = false
     @State private var locations = [MKPointAnnotation]()
 
     func authenticate() {
@@ -46,7 +48,10 @@ struct ContentView: View {
         Group {
             if self.isUnlocked {
                 ZStack {
-                    MapView(centerCoordinate: $centerCoordinate, annotations: locations)
+                    MapView(centerCoordinate: $centerCoordinate,
+                            selectedPlace: $selectedPlace,
+                            showingPlaceDetails: $showingPlaceDetails,
+                            annotations: locations)
                         .edgesIgnoringSafeArea(.all)
                     Circle()
                         .fill(Color.blue)
@@ -60,6 +65,7 @@ struct ContentView: View {
                             Button(action: {
                                 let newLocation = MKPointAnnotation()
                                 newLocation.coordinate = self.centerCoordinate
+                                newLocation.title = "Example location"
                                 self.locations.append(newLocation)
                             }) {
                                 Image(systemName: "plus")
@@ -78,6 +84,14 @@ struct ContentView: View {
             }
         }
         .onAppear(perform: authenticate)
+        .alert(isPresented: $showingPlaceDetails) {
+            Alert(title: Text(selectedPlace?.title ?? "-"),
+                  message: Text(selectedPlace?.subtitle ?? "-"),
+                  primaryButton: .default(Text("OK")),
+                  secondaryButton: .default(Text("Edit")) {
+                    // edit this place
+                })
+        }
     }
 }
 

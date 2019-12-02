@@ -22,13 +22,30 @@ struct MapView: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
-            view.canShowCallout = true
+            let identifier = "Placemark"
+
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if view != nil {
+                view?.annotation = annotation
+            } else {
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view?.canShowCallout = true
+                view?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            }
             return view
+        }
+        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+            guard let placemark = view.annotation as? MKPointAnnotation else { return }
+
+            parent.selectedPlace = placemark
+            parent.showingPlaceDetails = true
         }
     }
 
     @Binding var centerCoordinate: CLLocationCoordinate2D
+    @Binding var selectedPlace: MKPointAnnotation?
+    @Binding var showingPlaceDetails: Bool
+
     var annotations: [MKPointAnnotation]
 
     func makeUIView(context: UIViewRepresentableContext<MapView>) -> MKMapView {
@@ -60,6 +77,8 @@ extension MKPointAnnotation {
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         MapView(centerCoordinate: .constant(MKPointAnnotation.example.coordinate),
+                selectedPlace: .constant(MKPointAnnotation.example),
+                showingPlaceDetails: .constant(true),
                 annotations: [MKPointAnnotation.example])
     }
 }
