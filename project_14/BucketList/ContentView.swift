@@ -111,7 +111,13 @@ struct ContentView: View {
                     }
                 }
             } else {
-                Text("Locked")
+                Button("Unlock Places") {
+                    self.authenticate()
+                }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
             }
         }
         .onAppear(perform: {
