@@ -21,3 +21,15 @@ struct Page: Codable {
     let title: String
     let terms: [String: [String]]?
 }
+
+extension Page: Comparable {
+    static func < (lhs: Page, rhs: Page) -> Bool {
+        lhs.title < rhs.title
+    }
+}
+
+extension Page {
+    var description: String {
+        terms?["description"]?.first ?? "No further information"
+    }
+}
