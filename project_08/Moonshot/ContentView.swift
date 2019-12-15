@@ -104,6 +104,11 @@ struct MissionTitleView: View {
             }
             Spacer()
         }
+        .accessibilityElement(children: .ignore)
+        .accessibility(label: Text("Mission: \(mission.displayName)"))
+        .accessibility(hint: Text("\(mission.displayName). " +
+                                  "Launch date is \(mission.formattedLaunchDate). " +
+                                  "Crew: \(crewNames.joined(separator: ", "))"))
     }
 }
 
@@ -179,6 +184,7 @@ struct MissionView: View {
                     HStack {
                         Text(self.mission.formattedLaunchDate)
                             .font(.headline)
+                            .accessibility(label: Text("Launch date is \(self.mission.formattedLaunchDate)"))
                         Spacer()
                     }
                     .padding()
@@ -236,6 +242,7 @@ struct ContentView: View {
             .navigationBarTitle("Moonshot")
             .navigationBarItems(trailing: Button(action: { withAnimation { self.showCrewNames.toggle() } }) {
                 Text(showCrewNames ? "Crew" : "Launch date")
+                .accessibility(label: Text("Details: \(showCrewNames ? "Crew" : "Launch date")"))
             })
         }
     }
