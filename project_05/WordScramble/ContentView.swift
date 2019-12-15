@@ -126,16 +126,23 @@ struct ContentView: View {
                     Image(systemName: "\(score).circle")
                         .font(.largeTitle)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibility(label: Text("Your score is \(score)"))
 
                 TextField("Enter your word", text: $newWord, onCommit: addWord)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .padding()
 
-                List(usedWords, id: \.self) {
-                    Image(systemName: "\($0.count).circle")
-                    Text($0)
+                List(usedWords, id: \.self) { word in
+                    HStack {
+                        Image(systemName: "\(word.count).circle")
+                        Text(word)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibility(label: Text("\(word), \(word.count) letters"))
                 }
+                .accessibility(label: Text("List of words"))
             }
             .navigationBarTitle(rootWord)
             .onAppear(perform: startGame)
