@@ -25,6 +25,8 @@ struct ContentView: View {
                     Stepper(value: $order.quantity, in: 3...20) {
                         Text("Number of cakes: \(order.quantity)")
                     }
+                    .accessibility(label: Text("Number of cakes"))
+                    .accessibility(value: Text("\(order.quantity)"))
                 }
 
                 Section {
