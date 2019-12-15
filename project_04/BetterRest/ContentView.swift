@@ -84,6 +84,8 @@ struct ContentView: View {
                         Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
                             Text("\(sleepAmount, specifier: "%g") hours")
                         }
+                        .accessibility(label: Text("Amount of sleep"))
+                        .accessibility(value: Text("\(sleepAmount, specifier: "%g") hours"))
                     }
 
                     VStack {
@@ -112,6 +114,7 @@ struct ContentView: View {
                             .font(.largeTitle)
                     }
                     .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .combine)
                 }
             }
             .padding()
