@@ -28,10 +28,17 @@ struct PersonCardView: View {
     var conferenceName: String {
         conference?.name ?? "Unknown conference"
     }
+    var image: Image {
+        if let uiImage = storage.loadPhoto(id: person.photoId) {
+            return Image(uiImage: uiImage)
+        } else {
+            return Image(systemName: "person.circle.fill")
+        }
+    }
 
     var body: some View {
         HStack {
-            Image(systemName: "person.circle.fill")
+            image
                 .resizable()
                 .scaledToFill()
                 .frame(width: 60, height: 60)

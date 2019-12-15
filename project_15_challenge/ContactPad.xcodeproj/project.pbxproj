@@ -18,6 +18,7 @@
 		41FD2B3723A6A94300785077 /* ConferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD2B3623A6A94300785077 /* ConferencesView.swift */; };
 		41FD2B3923A6B4DB00785077 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD2B3823A6B4DB00785077 /* AddPersonView.swift */; };
 		41FD2B3B23A6BC9100785077 /* AddConferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD2B3A23A6BC9100785077 /* AddConferenceView.swift */; };
+		41FD2B3D23A6C33600785077 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD2B3C23A6C33600785077 /* ImagePicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		41FD2B3623A6A94300785077 /* ConferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConferencesView.swift; sourceTree = "<group>"; };
 		41FD2B3823A6B4DB00785077 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
 		41FD2B3A23A6BC9100785077 /* AddConferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddConferenceView.swift; sourceTree = "<group>"; };
+		41FD2B3C23A6C33600785077 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = ../../project_13/Instafilter/ImagePicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				41FD2B3623A6A94300785077 /* ConferencesView.swift */,
 				41FD2B3A23A6BC9100785077 /* AddConferenceView.swift */,
 				41FD2B3223A690D900785077 /* Storage.swift */,
+				41FD2B3C23A6C33600785077 /* ImagePicker.swift */,
 				41FD2B2423A68E4C00785077 /* Assets.xcassets */,
 				41FD2B2923A68E4C00785077 /* LaunchScreen.storyboard */,
 				41FD2B2C23A68E4C00785077 /* Info.plist */,
@@ -164,6 +167,7 @@
 				41FD2B3723A6A94300785077 /* ConferencesView.swift in Sources */,
 				41FD2B1F23A68E4A00785077 /* AppDelegate.swift in Sources */,
 				41FD2B3523A6A93100785077 /* PeopleView.swift in Sources */,
+				41FD2B3D23A6C33600785077 /* ImagePicker.swift in Sources */,
 				41FD2B3323A690D900785077 /* Storage.swift in Sources */,
 				41FD2B2123A68E4A00785077 /* SceneDelegate.swift in Sources */,
 				41FD2B2323A68E4A00785077 /* ContentView.swift in Sources */,

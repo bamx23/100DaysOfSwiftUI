@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Person: Identifiable, Codable {
     typealias ID = UUID
@@ -38,6 +39,8 @@ class Storage: ObservableObject {
         }
     }
 
+    private var images: [UUID: UIImage] = [:]
+
     init() {
         self.people = []
         self.conferences = []
@@ -52,15 +55,48 @@ class Storage: ObservableObject {
         people = (try? load()) ?? []
         conferences = (try? load()) ?? []
     }
+
+    func loadPhoto(id: UUID) -> UIImage? {
+        if let image = images[id] {
+            return image
+        } else {
+            let path = basePath()
+                .appendingPathComponent("Photos", isDirectory: true)
+                .appendingPathComponent(id.uuidString)
+                .appendingPathExtension("jpg")
+            if let data = try? Data(contentsOf: path) {
+                if let image = UIImage(data: data) {
+                    images[id] = image
+                    return image
+                }
+            }
+        }
+        return nil
+    }
+
+    func savePhoto(_ image: UIImage) throws -> UUID {
+        let id = UUID()
+        let photosPath = basePath().appendingPathComponent("Photos", isDirectory: true)
+        try FileManager.default.createDirectory(at: photosPath, withIntermediateDirectories: true, attributes: [:])
+        let path = photosPath.appendingPathComponent(id.uuidString).appendingPathExtension("jpg")
+        if let data = image.jpegData(compressionQuality: 0.9) {
+            try data.write(to: path, options: .atomic)
+        }
+        return id
+    }
 }
 
 extension Storage {
-    private func getFilePath<T>(_ subject: T) -> URL {
+    private func basePath() -> URL {
         guard let basePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             fatalError("Failed to find Documents directory")
         }
+        return basePath
+    }
+
+    private func getFilePath<T>(_ subject: T) -> URL {
         let typeName = String(describing: T.self)
-        let filePath = basePath.appendingPathComponent(typeName, isDirectory: false).appendingPathExtension("json")
+        let filePath = basePath().appendingPathComponent(typeName, isDirectory: false).appendingPathExtension("json")
         return filePath
     }
 
@@ -74,7 +110,7 @@ extension Storage {
     private func save<T: Encodable>(_ value: [T]) throws {
         let filePath = getFilePath(T.self)
         let data = try JSONEncoder().encode(value)
-        try data.write(to: filePath)
+        try data.write(to: filePath, options: .atomic)
     }
 }
 
