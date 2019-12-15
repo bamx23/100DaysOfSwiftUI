@@ -33,7 +33,7 @@ struct PersonCardView: View {
         HStack {
             Image(systemName: "person.circle.fill")
                 .resizable()
-                .scaledToFit()
+                .scaledToFill()
                 .frame(width: 60, height: 60)
                 .foregroundColor(.blue)
                 .clipShape(Circle())
@@ -56,6 +56,13 @@ struct PersonCardView: View {
 struct PeopleView: View {
     @EnvironmentObject var storage: Storage
 
+    @State private var showAddPerson = false
+    @State private var newPerson: Person?
+
+    func add() {
+        showAddPerson = true
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -68,7 +75,12 @@ struct PeopleView: View {
                 .onDelete(perform: { self.storage.people.remove(atOffsets:$0) })
             }
             .navigationBarTitle(Text("People"))
-            .navigationBarItems(leading: EditButton())
+            .navigationBarItems(leading: EditButton(),
+                                trailing: Button(action: add){ Image(systemName: "plus") })
+        }
+        .sheet(isPresented: $showAddPerson) {
+            AddPersonView()
+                .environmentObject(self.storage)
         }
     }
 }

@@ -26,6 +26,7 @@ struct ContentView: View {
                     Text("Conferences")
                 }
         }
+        .onAppear(perform: { self.storage.load() })
     }
 }
 

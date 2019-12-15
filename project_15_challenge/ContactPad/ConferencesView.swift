@@ -20,6 +20,12 @@ extension Conference {
 struct ConferencesView: View {
     @EnvironmentObject var storage: Storage
 
+    @State private var showAddConference = false
+
+    func add() {
+        showAddConference = true
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -35,7 +41,13 @@ struct ConferencesView: View {
                 .onDelete(perform: { self.storage.conferences.remove(atOffsets: $0) })
             }
             .navigationBarTitle(Text("Conferences"))
-            .navigationBarItems(leading: EditButton())
+            .navigationBarItems(leading: EditButton(),
+                                trailing: Button(action: add){ Image(systemName: "plus") })
+        }
+        .sheet(isPresented: $showAddConference) {
+            AddConferenceView { conference in
+                self.storage.conferences.insert(conference, at: 0)
+            }
         }
     }
 }
