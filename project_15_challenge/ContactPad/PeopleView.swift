@@ -12,8 +12,17 @@ extension Person {
     var displayDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+        formatter.timeStyle = .none
+        formatter.locale = Locale.current
         return formatter.string(from: date)
+    }
+
+    func imageView(storage: Storage) -> Image {
+        if let uiImage = storage.loadPhoto(id: photoId) {
+            return Image(uiImage: uiImage)
+        } else {
+            return Image(systemName: "person.circle.fill")
+        }
     }
 }
 
@@ -28,17 +37,9 @@ struct PersonCardView: View {
     var conferenceName: String {
         conference?.name ?? "Unknown conference"
     }
-    var image: Image {
-        if let uiImage = storage.loadPhoto(id: person.photoId) {
-            return Image(uiImage: uiImage)
-        } else {
-            return Image(systemName: "person.circle.fill")
-        }
-    }
-
     var body: some View {
         HStack {
-            image
+            person.imageView(storage: storage)
                 .resizable()
                 .scaledToFill()
                 .frame(width: 60, height: 60)
@@ -74,7 +75,7 @@ struct PeopleView: View {
         NavigationView {
             List {
                 ForEach(storage.people) { person in
-                    NavigationLink(destination: Text("")) {
+                    NavigationLink(destination: PersonView(person: person)) {
                         PersonCardView(person: person)
                             .environmentObject(self.storage)
                     }
@@ -83,7 +84,7 @@ struct PeopleView: View {
             }
             .navigationBarTitle(Text("People"))
             .navigationBarItems(leading: EditButton(),
-                                trailing: Button(action: add){ Image(systemName: "plus") })
+                                trailing: Button(action: add){ Image(systemName: "plus").padding() })
         }
         .sheet(isPresented: $showAddPerson) {
             AddPersonView()

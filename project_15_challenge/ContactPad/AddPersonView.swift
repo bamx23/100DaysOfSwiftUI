@@ -88,6 +88,9 @@ struct AddPersonView: View {
                                 .clipShape(Circle())
                                 .padding(5)
                                 .onTapGesture { self.choosePhoto() }
+                                .sheet(isPresented: self.$showImagePicker) {
+                                    ImagePicker(image: self.$photo)
+                                }
 
                             Text("Tap photo to choose")
                                 .font(.subheadline)
@@ -102,10 +105,17 @@ struct AddPersonView: View {
                                 ForEach(0..<self.storage.conferences.count, id: \.self) { index in
                                     Text("\(self.storage.conferences[index].name)")
                                 }
+                                .navigationBarTitle(Text(""), displayMode: .inline)
                             }
                         }
                         Button(action: self.addConference) {
                             Text("New conference")
+                        }
+                        .sheet(isPresented: self.$showAddConference) {
+                            AddConferenceView { conference in
+                                self.storage.conferences.insert(conference, at: 0)
+                                self.conferenceIndex = 0
+                            }
                         }
                     }
 
@@ -121,17 +131,8 @@ struct AddPersonView: View {
                         .disabled(self.invalidationMessage != nil)
                     }
                 }
-                .navigationBarTitle("New Preson")
+                .navigationBarTitle(Text("New Person"), displayMode: .large)
             }
-        }
-        .sheet(isPresented: $showAddConference) {
-            AddConferenceView { conference in
-                self.storage.conferences.insert(conference, at: 0)
-                self.conferenceIndex = 0
-            }
-        }
-        .sheet(isPresented: $showImagePicker) {
-            ImagePicker(image: self.$photo)
         }
     }
 }
